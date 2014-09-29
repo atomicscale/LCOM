@@ -48,8 +48,21 @@ int vt_print_char(char ch, char attr, int r, int c) {
 
 int vt_print_string(char *str, char attr, int r, int c) {
 
-  /* To complete ... */
+	char *ptr;
+	ptr = video_mem;
+	ptr = ptr+c*r*2;
+	int i = 0;
+	while (str[i] != 0)
+	{
+		*ptr = *str;
+		ptr++;
+		*ptr = attr;
+		ptr++;
 
+		return 0;
+	}
+
+	return -1;
 }
 
 int vt_print_int(int num, char attr, int r, int c) {
