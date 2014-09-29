@@ -8,6 +8,8 @@
 
 #include "video_txt.h"
 
+#include "math.h"
+
 /* Private global variables */
 
 static char *video_mem;		/* Address to which VRAM is mapped */
@@ -65,7 +67,25 @@ int vt_print_string(char *str, char attr, int r, int c) {
 
 int vt_print_int(int num, char attr, int r, int c) {
 
-  /* To complete ... */
+	char *ptr;
+	ptr = video_mem;
+	ptr = ptr+c*r*2;
+	int lastDigit, numberOfDigits = 0;
+	while(num)
+	{
+		num=num/10;
+		numberOfDigits++;
+	}
+	while (numberOfDigits>0)
+	{
+		/**ptr = (num / pow(10,numberOfDigits));
+		num = (num % pow(10,numberOfDigits));*/
+		numberOfDigits--;
+		ptr++;
+		*ptr = attr;
+		ptr++;
+	}
+	return 0;
 
 }
 
