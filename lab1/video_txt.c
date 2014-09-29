@@ -30,7 +30,7 @@ void vt_fill(char ch, char attr) {
 
 void vt_blank() {
 
-  /* To complete ... */
+	memset(video_mem, 0, scr_width*scr_lines*2);
 
 }
 
