@@ -54,15 +54,13 @@ int vt_print_string(char *str, char attr, int r, int c) {
 	int i = 0;
 	while (str[i] != 0)
 	{
-		*ptr = *str;
+		*ptr = str[i];
 		ptr++;
 		*ptr = attr;
 		ptr++;
-
-		return 0;
+		i++;
 	}
-
-	return -1;
+	return 0;
 }
 
 int vt_print_int(int num, char attr, int r, int c) {
