@@ -70,16 +70,28 @@ int vt_print_int(int num, char attr, int r, int c) {
 	char *ptr;
 	ptr = video_mem;
 	ptr = ptr+c*r*2;
-	int lastDigit, numberOfDigits = 0;
-	while(num)
+	int firstDigit, numberOfDigits = 0, power, num_aux, module;
+	if(num<0)
 	{
-		num=num/10;
+		*ptr = '-';
+		ptr++;
+		*ptr = attr;
+		ptr++;
+	}
+	num_aux = abs(num);
+	while(num_aux)
+	{
+		num_aux=num_aux/10;
 		numberOfDigits++;
 	}
-	while (numberOfDigits>0)
+	numberOfDigits--;
+	num_aux = abs(num);
+	while (numberOfDigits>=0)
 	{
-		/**ptr = (num / pow(10,numberOfDigits));
-		num = (num % pow(10,numberOfDigits));*/
+		power = pow(10,numberOfDigits);
+		firstDigit = num_aux / power;
+		*ptr = firstDigit + '0';
+		num_aux =  num_aux % power;
 		numberOfDigits--;
 		ptr++;
 		*ptr = attr;
