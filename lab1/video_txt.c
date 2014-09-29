@@ -56,6 +56,7 @@ int vt_print_string(char *str, char attr, int r, int c) {
 		vt_print_char(str[i], attr, r, c+i);
 		i++;
 	}
+
 	return 0;
 }
 
