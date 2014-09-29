@@ -39,7 +39,7 @@ void vt_blank() {
 int vt_print_char(char ch, char attr, int r, int c) {
 	char *ptr;
 	ptr = video_mem;
-	ptr = ptr+c*r*2;
+	ptr = ptr+(c+r*scr_width)*2;
 	*ptr = ch;
 	ptr++;
 	*ptr = attr;
@@ -50,16 +50,10 @@ int vt_print_char(char ch, char attr, int r, int c) {
 
 int vt_print_string(char *str, char attr, int r, int c) {
 
-	char *ptr;
-	ptr = video_mem;
-	ptr = ptr+c*r*2;
 	int i = 0;
 	while (str[i] != 0)
 	{
-		*ptr = str[i];
-		ptr++;
-		*ptr = attr;
-		ptr++;
+		vt_print_char(str[i], attr, r, c+i);
 		i++;
 	}
 	return 0;
@@ -67,7 +61,12 @@ int vt_print_string(char *str, char attr, int r, int c) {
 
 int vt_print_int(int num, char attr, int r, int c) {
 
-	char *ptr;
+	char str[12] = { 0 };
+	sprintf(str, "%d", num);
+	return vt_print_string(str, attr, r, c); }
+
+//Outro método de resolução (mais complicado)
+/*char *ptr;
 	ptr = video_mem;
 	ptr = ptr+c*r*2;
 	int firstDigit, numberOfDigits = 0, power, num_aux, module;
@@ -97,31 +96,42 @@ int vt_print_int(int num, char attr, int r, int c) {
 		*ptr = attr;
 		ptr++;
 	}
-	return 0;
+return 0;
 
-}
+}*/
 
 
 int vt_draw_frame(int width, int height, char attr, int r, int c) {
-	char *ptr;
-	ptr = video_mem;
-	ptr = ptr+c*r*2;
 	int i, j;
 	for (i=1; i<=height; i++)
 	{
 		for (j=1; j<=width; j++)
 		{
-			if (i == 1 || i == height || j ==1 || j == width)
+			if (i == 1 && j == 1)
 			{
-				*ptr = '*';
-				ptr++;
-				*ptr = attr;
-				ptr++;
+				vt_print_char(UL_CORNER, attr, r+i, c+j);
 			}
-			else
-				ptr+=2;
+			else if (i == 1 && j == width)
+			{
+				vt_print_char(UR_CORNER, attr, r+i, c+j);
+			}
+			else if (i == height && j == 1)
+			{
+					vt_print_char(LL_CORNER, attr, r+i, c+j);
+			}
+			else if (i == height && j == width)
+			{
+					vt_print_char(LR_CORNER, attr, r+i, c+j);
+			}
+			else if (i == 1 || i == height)
+			{
+					vt_print_char(HOR_BAR, attr, r+i, c+j);
+			}
+			else if (j == 1 || j == width)
+			{
+					vt_print_char(VERT_BAR, attr, r+i, c+j);
+			}
 		}
-		ptr += (scr_width-width)*2;
 	}
 	return 0;
 }
