@@ -33,17 +33,51 @@ int timer_get_conf(unsigned long timer, unsigned char *st) {
 	return 1;
 	}
 
-int timer_display_conf(unsigned char conf) {
-	printf("Bit 7: %d \n",  (conf & BIT(7)) >> 7);
-	printf("Bit 6: %d \n",  (conf & BIT(6)) >> 6);
-	printf("Bit 5: %d \n",  (conf & BIT(5)) >> 5);
-	printf("Bit 4: %d \n",  (conf & BIT(4)) >> 4);
-	printf("Bit 3: %d \n",  (conf & BIT(3)) >> 3);
-	printf("Bit 2: %d \n",  (conf & BIT(2)) >> 2);
-	printf("Bit 1: %d \n",  (conf & BIT(1)) >> 1);
-	printf("Bit 0: %d \n",  (conf & BIT(0)));
 
-		return 0;
+
+int timer_display_conf(unsigned char conf) {
+
+	//Select counter
+	if (((conf & BIT(7)) >> 7) == 0 && ((conf & BIT(6)) >> 6) == 0)
+		printf("\nSelect counter: %d \n",  0);
+	if (((conf & BIT(7)) >> 7) == 0 && ((conf & BIT(6)) >> 6) == 1)
+		printf("\nSelect counter: %d \n",  1);
+	if (((conf & BIT(7)) >> 7) == 1 && ((conf & BIT(6)) >> 6) == 0)
+		printf("\nSelect counter: %d \n",  2);
+
+	// Type of Access
+	if (((conf & BIT(5)) >> 5) == 0 && ((conf & BIT(4)) >> 4) == 1)
+		printf("Type of Access: %s \n", "LSB");
+	if (((conf & BIT(5)) >> 5) == 1 && ((conf & BIT(4)) >> 4) == 0)
+			printf("Type of Access: %s \n", "MSB");
+	if (((conf & BIT(5)) >> 5) == 1 && ((conf & BIT(4)) >> 4) == 1)
+			printf("Type of Access: %s \n", "LSB followed by MSB");
+
+	//Operation Mode
+	if (((conf & BIT(3)) >> 3) == 0 && ((conf & BIT(2)) >> 2) == 0 && ((conf & BIT(1)) >> 1) == 0)
+		printf("Operating Mode: %d \n", 0);
+	if (((conf & BIT(3)) >> 3) == 0 && ((conf & BIT(2)) >> 2) == 0 && ((conf & BIT(1)) >> 1) == 1)
+		printf("Operating Mode: %d \n", 1);
+	if (((conf & BIT(3)) >> 3) == 0 && ((conf & BIT(2)) >> 2) == 1 && ((conf & BIT(1)) >> 1) == 0)
+		printf("Operating Mode: %d \n", 2);
+	if (((conf & BIT(3)) >> 3) == 1 && ((conf & BIT(2)) >> 2) == 1 && ((conf & BIT(1)) >> 1) == 0)
+		printf("Operating Mode: %d \n", 2);
+	if (((conf & BIT(3)) >> 3) == 0 && ((conf & BIT(2)) >> 2) == 1 && ((conf & BIT(1)) >> 1) == 1)
+		printf("Operating Mode: %d \n", 3);
+	if (((conf & BIT(3)) >> 3) == 1 && ((conf & BIT(2)) >> 2) == 1 && ((conf & BIT(1)) >> 0) == 1)
+		printf("Operating Mode: %d \n", 3);
+	if (((conf & BIT(3)) >> 3) == 1 && ((conf & BIT(2)) >> 2) == 0 && ((conf & BIT(1)) >> 1) == 0)
+		printf("Operating Mode: %d \n", 4);
+	if (((conf & BIT(3)) >> 3) == 1 && ((conf & BIT(2)) >> 2) == 0 && ((conf & BIT(1)) >> 1) == 1)
+		printf("Operating Mode: %d \n", 5);
+
+	//Counting Mode
+	if ((conf & BIT(0)) == 0)
+		printf("Counting mode: %s \n \n",  "Binary (16 bits)");
+	if ((conf & BIT(0)) == 1)
+		printf("Counting mode: %s \n \n",  "BCD (4 decades)");
+
+	return 0;
 }
 
 int timer_test_square(unsigned long freq) {
