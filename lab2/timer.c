@@ -34,12 +34,9 @@ int timer_get_conf(unsigned long timer, unsigned char *st) {
 				int sys_inb(TIMER_RB_SEL(timer), *st)
 			case 2:
 				int sys_inb(TIMER_RB_SEL(timer), *st)
-
+			default:
+				return 1;
 	}
-		return 0;
-
-			return 1;
-}
 
 int timer_display_conf(unsigned char conf) {
 	
