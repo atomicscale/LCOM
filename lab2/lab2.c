@@ -32,13 +32,12 @@ static void print_usage(char *argv[]) {
 
 static int proc_args(int argc, char *argv[]) {
 
-  unsigned long ch, row, col, attr, width, height;
-  char *str;
+  unsigned long timer;
   long num;
 
   /* check the function to test: if the first characters match, accept it */
 
-  } if (strncmp(argv[1], "test_config", strlen("timer_test_config")) == 0) {
+  } if (strncmp(argv[1], "test_config", strlen("test_config")) == 0) {
 	  if( argc != 3 ) {
 		  printf("timer: wrong no of arguments for test of timer_test_config() \n");
 		  return 1;
@@ -89,7 +88,7 @@ static long parse_long(char *str, int base) {
   }
 
   if (endptr == str) {
-	  printf("video_txt: parse_long: no digits were found in %s \n", str);
+	  printf("timer: parse_long: no digits were found in %s \n", str);
 	  return LONG_MAX;
   }
 
