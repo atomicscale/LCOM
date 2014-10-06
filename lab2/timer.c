@@ -24,25 +24,26 @@ void timer_int_handler() {
 
 int timer_get_conf(unsigned long timer, unsigned char *st) {
 	unsigned long read_back = TIMER_RB_CMD | TIMER_LSB_MSB
-	int sys_outb(TIMER_CTRL, read_back);
-	
-		swich(timer)
-	{
-			case 0:
-				int sys_inb(TIMER_RB_SEL(timer), *st)
-			case 1:
-				int sys_inb(TIMER_RB_SEL(timer), *st)
-			case 2:
-				int sys_inb(TIMER_RB_SEL(timer), *st)
-			default:
-				return 1;
+	sys_outb(TIMER_CTRL, read_back);
+
+	if (timer == 0 || timer = 1 || timer == 2){
+		sys_inb(TIMER_RB_SEL(timer), *st);
+		return 0;
+	}
+	return 1;
 	}
 
 int timer_display_conf(unsigned char conf) {
-	
+	printf("Bit 7: %d \n",  (conf & BIT(7)) >> 7);
+	printf("Bit 6: %d \n",  (conf & BIT(6)) >> 6);
+	printf("Bit 5: %d \n",  (conf & BIT(5)) >> 5);
+	printf("Bit 4: %d \n",  (conf & BIT(4)) >> 4);
+	printf("Bit 3: %d \n",  (conf & BIT(3)) >> 3);
+	printf("Bit 2: %d \n",  (conf & BIT(2)) >> 2);
+	printf("Bit 1: %d \n",  (conf & BIT(1)) >> 1);
+	printf("Bit 0: %d \n"),  (conf & BIT(0));
 
-
-	return 1;
+		return 0;
 }
 
 int timer_test_square(unsigned long freq) {

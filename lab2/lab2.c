@@ -1,7 +1,7 @@
 #include <minix/drivers.h>
 
-#include "vt_info.h"
-#include "video_txt.h"
+#include "timer.h"
+#include "i8254.h"
 
 static int proc_args(int argc, char *argv[]);
 static unsigned long parse_ulong(char *str, int base);
@@ -26,7 +26,7 @@ int main(int argc, char **argv) {
 
 static void print_usage(char *argv[]) {
   printf("Usage: one of the following:\n"
-	 "\t service run %s -args \"test_config <timer>\" \n"
+	 "\t service run %s -args \"test_config <timer>\" \n",
 	 argv[0]);
 }
 
@@ -38,7 +38,7 @@ static int proc_args(int argc, char *argv[]) {
 
   /* check the function to test: if the first characters match, accept it */
 
-  } if (strncmp(argv[1], "test_config", strlen("test_config")) == 0) {
+  if (strncmp(argv[1], "test_config", strlen("test_config")) == 0) {
 	  if( argc != 3 ) {
 		  printf("timer: wrong no of arguments for test of timer_test_config() \n");
 		  return 1;
@@ -47,9 +47,10 @@ static int proc_args(int argc, char *argv[]) {
 		  return 1;
 	  printf("timer:: timer_test_config(0x%X, 0x%X)\n",
 			  (unsigned)timer);
-	  timer_test_config(timer);
+	  timer_test_conf(timer);
 	  return 0;
-  } else {
+  }
+  else {
 	  printf("timer: non valid function \"%s\" to test\n", argv[1]);
 	  return 1;
   }
