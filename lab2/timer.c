@@ -1,7 +1,7 @@
 #include <minix/syslib.h>
 #include <minix/drivers.h>
 #include "i8254.h"
-#include "lab2.h"
+
 
 int timer_set_square(unsigned long timer, unsigned long freq) {
 
@@ -23,11 +23,11 @@ void timer_int_handler() {
 }
 
 int timer_get_conf(unsigned long timer, unsigned char *st) {
-	unsigned long read_back = TIMER_RB_CMD | TIMER_LSB_MSB
+	unsigned long read_back = TIMER_RB_CMD | TIMER_RB_SEL(timer) | TIMER_RB_COUNT_;
 	sys_outb(TIMER_CTRL, read_back);
 
-	if (timer == 0 || timer = 1 || timer == 2){
-		sys_inb(TIMER_RB_SEL(timer), *st);
+	if (timer == 0 || timer == 1 || timer == 2){
+		sys_inb(TIMER_0+ timer, st);
 		return 0;
 	}
 	return 1;
@@ -59,9 +59,9 @@ int timer_test_int(unsigned long time) {
 int timer_test_config(unsigned long timer) {
 	unsigned char st;
 	int n1, n2;
-	n1 = timer_get_conf(timer, *st);
+	n1 = timer_get_conf(timer, &st);
 	n2 = timer_display_conf(st);
-	if (n1 !=0 && n2 !=0 ){
+	if (n1 == 0 && n2 == 0 ){
 	return 0;
 	}
 	else

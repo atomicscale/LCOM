@@ -47,7 +47,7 @@ static int proc_args(int argc, char *argv[]) {
 		  return 1;
 	  printf("timer:: timer_test_config(0x%X, 0x%X)\n",
 			  (unsigned)timer);
-	  timer_test_conf(timer);
+	  timer_test_config(timer);
 	  return 0;
   }
   else {
