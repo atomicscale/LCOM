@@ -23,11 +23,11 @@ void timer_int_handler() {
 }
 
 int timer_get_conf(unsigned long timer, unsigned char *st) {
-	unsigned long read_back = TIMER_RB_CMD | TIMER_RB_SEL(timer) | TIMER_RB_COUNT_;
+	unsigned char read_back = TIMER_RB_CMD | TIMER_RB_SEL(timer) | TIMER_RB_COUNT_;
 	sys_outb(TIMER_CTRL, read_back);
 
 	if (timer == 0 || timer == 1 || timer == 2){
-		sys_inb(TIMER_0+ timer, st);
+		sys_inb(TIMER_0 + timer,(unsigned long int *) st);
 		return 0;
 	}
 	return 1;
@@ -41,7 +41,7 @@ int timer_display_conf(unsigned char conf) {
 	printf("Bit 3: %d \n",  (conf & BIT(3)) >> 3);
 	printf("Bit 2: %d \n",  (conf & BIT(2)) >> 2);
 	printf("Bit 1: %d \n",  (conf & BIT(1)) >> 1);
-	printf("Bit 0: %d \n"),  (conf & BIT(0));
+	printf("Bit 0: %d \n",  (conf & BIT(0)));
 
 		return 0;
 }
