@@ -57,9 +57,12 @@ int timer_test_int(unsigned long time) {
 
 int timer_test_config(unsigned long timer) {
 	unsigned char st;
-	if (timer_get_conf (timer, *st) != 0){
-		return timer_get_conf(timer, *st);
+	int n1, n2;
+	n1 = timer_get_conf(timer, *st);
+	n2 = timer_display_conf(st);
+	if (n1 !=0 && n2 !=0 ){
+	return 0;
 	}
-	return timer_display_conf(st);
-	
+	else
+		return 1;
 }
