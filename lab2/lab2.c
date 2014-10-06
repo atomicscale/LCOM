@@ -26,13 +26,14 @@ int main(int argc, char **argv) {
 
 static void print_usage(char *argv[]) {
   printf("Usage: one of the following:\n"
-	 "\t service run %s -args \"test_config <hex-code> <hex-attr>\" \n"
+	 "\t service run %s -args \"test_config <timer>\" \n"
 	 argv[0]);
 }
 
 static int proc_args(int argc, char *argv[]) {
 
   unsigned long timer;
+  char *str;
   long num;
 
   /* check the function to test: if the first characters match, accept it */
@@ -42,11 +43,11 @@ static int proc_args(int argc, char *argv[]) {
 		  printf("timer: wrong no of arguments for test of timer_test_config() \n");
 		  return 1;
 	  }
-	  if( (ch = parse_ulong(argv[2], 10)) == ULONG_MAX )
+	  if( (timer = parse_ulong(argv[2], 10)) == ULONG_MAX )
 		  return 1;
 	  printf("timer:: timer_test_config(0x%X, 0x%X)\n",
-			  (unsigned)ch, (unsigned)attr);
-	  vt_fill(ch, attr);
+			  (unsigned)timer);
+	  timer_test_config(timer);
 	  return 0;
   } else {
 	  printf("timer: non valid function \"%s\" to test\n", argv[1]);
