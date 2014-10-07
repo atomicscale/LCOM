@@ -36,7 +36,6 @@ int timer_get_conf(unsigned long timer, unsigned char *st) {
 
 
 int timer_display_conf(unsigned char conf) {
-
 	//Select counter
 	if (((conf & BIT(7)) >> 7) == 0 && ((conf & BIT(6)) >> 6) == 0)
 		printf("\nSelect counter: %d \n",  0);
@@ -44,6 +43,8 @@ int timer_display_conf(unsigned char conf) {
 		printf("\nSelect counter: %d \n",  1);
 	if (((conf & BIT(7)) >> 7) == 1 && ((conf & BIT(6)) >> 6) == 0)
 		printf("\nSelect counter: %d \n",  2);
+	else
+		return 1;
 
 	// Type of Access
 	if (((conf & BIT(5)) >> 5) == 0 && ((conf & BIT(4)) >> 4) == 1)
@@ -52,30 +53,36 @@ int timer_display_conf(unsigned char conf) {
 			printf("Type of Access: %s \n", "MSB");
 	if (((conf & BIT(5)) >> 5) == 1 && ((conf & BIT(4)) >> 4) == 1)
 			printf("Type of Access: %s \n", "LSB followed by MSB");
+	else
+		return 1;
 
 	//Operation Mode
 	if (((conf & BIT(3)) >> 3) == 0 && ((conf & BIT(2)) >> 2) == 0 && ((conf & BIT(1)) >> 1) == 0)
-		printf("Operating Mode: %d \n", 0);
+		printf("Operating Mode: %s \n", "0 - Interrupt on terminal count");
 	if (((conf & BIT(3)) >> 3) == 0 && ((conf & BIT(2)) >> 2) == 0 && ((conf & BIT(1)) >> 1) == 1)
-		printf("Operating Mode: %d \n", 1);
+		printf("Operating Mode: %s \n", "1 - Hardware retriggerable one-shot");
 	if (((conf & BIT(3)) >> 3) == 0 && ((conf & BIT(2)) >> 2) == 1 && ((conf & BIT(1)) >> 1) == 0)
-		printf("Operating Mode: %d \n", 2);
+		printf("Operating Mode: %s \n", "2 - Rate generator");
 	if (((conf & BIT(3)) >> 3) == 1 && ((conf & BIT(2)) >> 2) == 1 && ((conf & BIT(1)) >> 1) == 0)
-		printf("Operating Mode: %d \n", 2);
+		printf("Operating Mode: %s \n", "2 - Rate generator");
 	if (((conf & BIT(3)) >> 3) == 0 && ((conf & BIT(2)) >> 2) == 1 && ((conf & BIT(1)) >> 1) == 1)
-		printf("Operating Mode: %d \n", 3);
+		printf("Operating Mode: %s \n", "3 - Square wave mode");
 	if (((conf & BIT(3)) >> 3) == 1 && ((conf & BIT(2)) >> 2) == 1 && ((conf & BIT(1)) >> 0) == 1)
-		printf("Operating Mode: %d \n", 3);
+		printf("Operating Mode: %s \n", "3 - Square wave mode");
 	if (((conf & BIT(3)) >> 3) == 1 && ((conf & BIT(2)) >> 2) == 0 && ((conf & BIT(1)) >> 1) == 0)
-		printf("Operating Mode: %d \n", 4);
+		printf("Operating Mode: %s \n", "4 - Software triggered strobe");
 	if (((conf & BIT(3)) >> 3) == 1 && ((conf & BIT(2)) >> 2) == 0 && ((conf & BIT(1)) >> 1) == 1)
-		printf("Operating Mode: %d \n", 5);
+		printf("Operating Mode: %s \n", "5 - Hardware triggered strobe (retriggerable)");
+	else
+		return 1;
 
 	//Counting Mode
 	if ((conf & BIT(0)) == 0)
 		printf("Counting mode: %s \n \n",  "Binary (16 bits)");
 	if ((conf & BIT(0)) == 1)
 		printf("Counting mode: %s \n \n",  "BCD (4 decades)");
+	else
+		return 1;
 
 	return 0;
 }
