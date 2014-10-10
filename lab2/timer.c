@@ -1,5 +1,6 @@
 #include <minix/syslib.h>
 #include <minix/drivers.h>
+#include <minix/com.h>
 #include "i8254.h"
 
 unsigned long counter;
@@ -20,15 +21,15 @@ int timer_set_square(unsigned long timer, unsigned long freq) {
 }
 
 int timer_subscribe_int(void ) {
-	if (sys_irqsetpolicy(TIMER0_IRQ, IRQ_REENABLE, &hook_id) != 0 && sys_irqenable(&hook_id) != 0) //The policy you should specify in sys_irqsetpolicy() is IRQ_REENABLE, so that the generic interrupt handler will acknowledge the interrupt,
+	if (sys_irqsetpolicy(TIMER0_IRQ, IRQ_REENABLE, &hook_id) != 0 || sys_irqenable(&hook_id) != 0) //The policy you should specify in sys_irqsetpolicy() is IRQ_REENABLE, so that the generic interrupt handler will acknowledge the interrupt,
 		return -1;																					//i.e. ouput the EOI command to the PIC, thus enabling further interrupts on the corresponding IRQ line
 	else
 		//return something;
 }
 
 int timer_unsubscribe_int() {
-	if(sys_irqrmpolicy(&hook_id) != 0 && sys_irqdisable(&hook_id) != 0) //sys_irqrmpolicy(int *hook_id) Unsubscribes a previous interrupt notification,
-		return 1;																//by specifying a pointer to thehook_id returned by the kernel
+	if(sys_irqrmpolicy(&hook_id) != 0 || sys_irqdisable(&hook_id) != 0) //sys_irqrmpolicy(int *hook_id) Unsubscribes a previous interrupt notification,
+		return -1;																//by specifying a pointer to thehook_id returned by the kernel
 	else																	//sys_irqdisable(int *hook_id) Masks an interrupt line associated with a previously subscribed interrupt notification,
 		return 0;																//by specifying a pointer to the hook_id returned by the kernel
 }
@@ -109,7 +110,31 @@ int timer_test_square(unsigned long freq) {
 }
 
 int timer_test_int(unsigned long time) {
+
+	int ipc_status;
+	message msg;
 	
+	while( 1 ) { /* You may want to use a different condition */
+	/* Get a request message. */
+	if ( driver_receive(ANY, &msg, &ipc_status) != 0 ) {
+		printf("driver_receive failed with: %d", r);
+		continue;
+	}
+	if (is_ipc_notify(ipc_status)) { /* received notification */
+		switch (_ENDPOINT_P(msg.m_source)) {
+			case HARDWARE: /* hardware interrupt notification */
+				if (msg.NOTIFY_ARG & irq_set) { /* subscribed interrupt */
+	                    ...   /* process it */
+				}
+						break;
+				default:
+					break; /* no other notifications expected: do nothing */
+				}
+	} else { /* received a standard message, not a notification */
+	/* no standard messages expected: do nothing */
+	}
+}
+
 	return 1;
 }
 
