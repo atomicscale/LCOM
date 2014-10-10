@@ -104,18 +104,23 @@ int timer_test_int(unsigned long time) {
 
 	int ipc_status;
 	message msg;
+	int r;
+	counter = 0;
 	
-	while( 1 ) { /* You may want to use a different condition */
+	timer_subscribe_int;
+
+	while( //condition missing ) { /* You may want to use a different condition */
 	/* Get a request message. */
-	if ( driver_receive(ANY, &msg, &ipc_status) != 0 ) {
-		printf("driver_receive failed with: %d", r);
-		continue;
+			r = driver_receive(ANY, &msg, &ipc_status);
+		if (r != 0 ) {
+			printf("driver_receive failed with: %d", r);
+				continue;
 	}
 	if (is_ipc_notify(ipc_status)) { /* received notification */
 		switch (_ENDPOINT_P(msg.m_source)) {
 			case HARDWARE: /* hardware interrupt notification */
 				if (msg.NOTIFY_ARG & irq_set) { /* subscribed interrupt */
-	                    ...   /* process it */
+	                    time_int_handler();  /* process it */
 				}
 						break;
 				default:
@@ -125,8 +130,9 @@ int timer_test_int(unsigned long time) {
 	/* no standard messages expected: do nothing */
 	}
 }
+	timer_unsubscribe_int();
 
-	return 1;
+	return 0;
 }
 
 int timer_test_config(unsigned long timer) {
