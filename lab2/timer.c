@@ -7,7 +7,7 @@ unsigned long counter;
 static int hook_id;
 
 int timer_set_square(unsigned long timer, unsigned long freq) {
-	unsigned char read_back = TIMER_SQR_WAVE | TIMER_BIN | TIMER_0 + timer | TIMER_LSB_MSB;
+	unsigned char read_back = TIMER_SQR_WAVE | TIMER_BIN | (TIMER_0 + timer) | TIMER_LSB_MSB;
 	unsigned long divisor = TIMER_FREQ / freq;
 	if (divisor < 0xFFFF)
 	{
@@ -22,16 +22,14 @@ int timer_set_square(unsigned long timer, unsigned long freq) {
 
 int timer_subscribe_int(void ) {
 	if (sys_irqsetpolicy(TIMER0_IRQ, IRQ_REENABLE, &hook_id) != 0 || sys_irqenable(&hook_id) != 0) //The policy you should specify in sys_irqsetpolicy() is IRQ_REENABLE, so that the generic interrupt handler will acknowledge the interrupt,
-		return -1;																					//i.e. ouput the EOI command to the PIC, thus enabling further interrupts on the corresponding IRQ line
-	else
+		return -1;
 		//return something;
 }
 
 int timer_unsubscribe_int() {
 	if(sys_irqrmpolicy(&hook_id) != 0 || sys_irqdisable(&hook_id) != 0) //sys_irqrmpolicy(int *hook_id) Unsubscribes a previous interrupt notification,
-		return -1;																//by specifying a pointer to thehook_id returned by the kernel
-	else																	//sys_irqdisable(int *hook_id) Masks an interrupt line associated with a previously subscribed interrupt notification,
-		return 0;																//by specifying a pointer to the hook_id returned by the kernel
+		return -1;																//by specifying a pointer to thehook_id returned by the kernel																	//sys_irqdisable(int *hook_id) Masks an interrupt line associated with a previously subscribed interrupt notification,
+		return 0;										 						//by specifying a pointer to the hook_id returned by the kernel
 }
 
 void timer_int_handler() {
@@ -53,17 +51,10 @@ int timer_get_conf(unsigned long timer, unsigned char *st) {
 
 int timer_display_conf(unsigned char conf) {
 	//Output - indica se está ativo ou não
-	if ((conf & BIT(7)) >> 7)
-		printf("\nOutput: %d \n",  1);
-	else
-		printf("\nOutput: %d \n",  0);
+	 printf("\nOutput: %d \n",  (conf & BIT(7)) >> 7):
 
 	//Null Count - indica se está à espera de um novo valor ou não
-	if ((conf & BIT(6)) >> 6)
-		printf("Null Count: %d \n",  1);
-	else
-		printf("Null Count: %d \n",  0);
-
+	 printf("\nNull Count: %d \n",  (conf & BIT(6)) >> 6):
 
 	// Type of Access
 	if (((conf & BIT(5)) >> 5) == 0 && ((conf & BIT(4)) >> 4) == 1)
@@ -144,7 +135,7 @@ int timer_test_config(unsigned long timer) {
 	n1 = timer_get_conf(timer, &st);
 	n2 = timer_display_conf(st);
 	if (n1 == 0 && n2 == 0 ){
-	return 0;
+		return 0;
 	}
 	else
 		return 1;
