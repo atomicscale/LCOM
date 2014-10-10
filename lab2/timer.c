@@ -3,6 +3,8 @@
 #include "i8254.h"
 
 
+static int hook_id;
+
 int timer_set_square(unsigned long timer, unsigned long freq) {
 	unsigned char read_back = TIMER_SQR_WAVE | TIMER_BIN | TIMER_0 + timer | TIMER_LSB_MSB;
 	unsigned long divisor = TIMER_FREQ / freq;
@@ -23,8 +25,10 @@ int timer_subscribe_int(void ) {
 }
 
 int timer_unsubscribe_int() {
-
-	return 1;
+	if(sys_irqrmpolicy(&hook_id) = OK && sys_irqdisable(&hook_id) = OK) //sys_irqrmpolicy(int *hook_id) Unsubscribes a previous interrupt notification,
+		return 0;																//by specifying a pointer to thehook_id returned by the kernel
+	else																	//sys_irqdisable(int *hook_id) Masks an interrupt line associated with a previously subscribed interrupt notification,
+		return 1;																//by specifying a pointer to the hook_id returned by the kernel
 }
 
 void timer_int_handler() {
