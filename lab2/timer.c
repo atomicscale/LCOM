@@ -20,17 +20,17 @@ int timer_set_square(unsigned long timer, unsigned long freq) {
 }
 
 int timer_subscribe_int(void ) {
-	if (sys_irqsetpolicy(TIMER0_IRQ, IRQ_REENABLE, &hook_id) !=0 && (sys_irqenable(&hook_id) != 0) //The policy you should specify in sys_irqsetpolicy() is IRQ_REENABLE, so that the generic interrupt handler will acknowledge the interrupt,
+	if (sys_irqsetpolicy(TIMER0_IRQ, IRQ_REENABLE, &hook_id) != 0 && sys_irqenable(&hook_id) != 0) //The policy you should specify in sys_irqsetpolicy() is IRQ_REENABLE, so that the generic interrupt handler will acknowledge the interrupt,
 		return -1;																					//i.e. ouput the EOI command to the PIC, thus enabling further interrupts on the corresponding IRQ line
 	else
 		//return something;
 }
 
 int timer_unsubscribe_int() {
-	if(sys_irqrmpolicy(&hook_id) == OK && sys_irqdisable(&hook_id) == OK) //sys_irqrmpolicy(int *hook_id) Unsubscribes a previous interrupt notification,
-		return 0;																//by specifying a pointer to thehook_id returned by the kernel
+	if(sys_irqrmpolicy(&hook_id) != 0 && sys_irqdisable(&hook_id) != 0) //sys_irqrmpolicy(int *hook_id) Unsubscribes a previous interrupt notification,
+		return 1;																//by specifying a pointer to thehook_id returned by the kernel
 	else																	//sys_irqdisable(int *hook_id) Masks an interrupt line associated with a previously subscribed interrupt notification,
-		return 1;																//by specifying a pointer to the hook_id returned by the kernel
+		return 0;																//by specifying a pointer to the hook_id returned by the kernel
 }
 
 void timer_int_handler() {
