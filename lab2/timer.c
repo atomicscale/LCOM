@@ -8,12 +8,14 @@ static int hook_id;
 
 int timer_set_square(unsigned long timer, unsigned long freq) {
 	unsigned char read_back = TIMER_SQR_WAVE | TIMER_BIN | (TIMER_0 + timer) | TIMER_LSB_MSB;
-	unsigned long divisor = TIMER_FREQ / freq;
-	if (divisor < 0xFFFF)
+	unsigned long new_freq = TIMER_FREQ / freq;
+	unsigned char lsb = new_freq & 0xFF; // tem que se passar 1 byte de cada vez
+	unsigned char msb = new_freq >> 8;
+	if (new_freq < 0xFFFF)
 	{
 		sys_outb(TIMER_CTRL, read_back);
-		sys_outb(TIMER_0 + timer, divisor & 0xFF);
-		sys_outb(TIMER_0 + timer, divisor >> 8);
+		sys_outb(TIMER_0 + timer, lsb);
+		sys_outb(TIMER_0 + timer, msb);
 		return 0;
 	}
 	else
@@ -23,7 +25,7 @@ int timer_set_square(unsigned long timer, unsigned long freq) {
 int timer_subscribe_int(void ) {
 	if (sys_irqsetpolicy(TIMER0_IRQ, IRQ_REENABLE, &hook_id) != 0 || sys_irqenable(&hook_id) != 0) //The policy you should specify in sys_irqsetpolicy() is IRQ_REENABLE, so that the generic interrupt handler will acknowledge the interrupt,
 		return -1;
-		//return something;
+		return BIT(hook_id);
 }
 
 int timer_unsubscribe_int() {
@@ -50,10 +52,10 @@ int timer_get_conf(unsigned long timer, unsigned char *st) {
 
 
 int timer_display_conf(unsigned char conf) {
-	//Output - indica se está ativo ou não
+	//Output - indica se está ativo
 	 printf("\nOutput: %d \n",  (conf & BIT(7)) >> 7):
 
-	//Null Count - indica se está à espera de um novo valor ou não
+	//Null Count - indica se está à espera de um novo valor
 	 printf("\nNull Count: %d \n",  (conf & BIT(6)) >> 6):
 
 	// Type of Access
@@ -104,22 +106,22 @@ int timer_test_int(unsigned long time) {
 
 	int ipc_status;
 	message msg;
-	int r;
-	counter = 0;
+	int receive; // usado para evitar chamar a função driver_receive várias vezes
+	counter = 0; // Inicializa o contador
 	
 	timer_subscribe_int;
 
-	while( //condition missing ) { /* You may want to use a different condition */
+	while(counter <= time*60) { /* You may want to use a different condition */
 	/* Get a request message. */
-			r = driver_receive(ANY, &msg, &ipc_status);
-		if (r != 0 ) {
-			printf("driver_receive failed with: %d", r);
+			receive = driver_receive(ANY, &msg, &ipc_status);
+		if (receive != 0 ) {
+			printf("driver_receive failed with: %d", receive);
 				continue;
 	}
 	if (is_ipc_notify(ipc_status)) { /* received notification */
 		switch (_ENDPOINT_P(msg.m_source)) {
 			case HARDWARE: /* hardware interrupt notification */
-				if (msg.NOTIFY_ARG & irq_set) { /* subscribed interrupt */
+				if (msg.NOTIFY_ARG & TIMER0_IRQ) { /* subscribed interrupt */
 	                    time_int_handler();  /* process it */
 				}
 						break;
@@ -138,9 +140,10 @@ int timer_test_int(unsigned long time) {
 int timer_test_config(unsigned long timer) {
 	unsigned char st;
 	int n1, n2;
-	n1 = timer_get_conf(timer, &st);
-	n2 = timer_display_conf(st);
-	if (n1 == 0 && n2 == 0 ){
+	get_conf = timer_get_conf(timer, &st);
+	display_conf  = timer_diplay_conf(st);
+	if (get_conf == 0 && display_conf == 0 ) // Confirma se nenhuma das funções chamadas dá erro
+	{
 		return 0;
 	}
 	else
