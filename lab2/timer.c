@@ -33,7 +33,8 @@ int timer_subscribe_int(void ) {
 	that the generic interrupt handler will acknowledge the interrupt. */
 	if (sys_irqsetpolicy(TIMER0_IRQ, IRQ_REENABLE, &hook_id) != 0 || sys_irqenable(&hook_id) != 0)
 		return -1;
-		return hook_id;
+	else
+		return TIMER_HOOK_BIT;
 }
 
 int timer_unsubscribe_int() {
@@ -70,10 +71,10 @@ int timer_get_conf(unsigned long timer, unsigned char *st) {
 
 int timer_display_conf(unsigned char conf) {
 	//Output - indica se está ativo
-	 printf("\nOutput: %d \n",  (conf & BIT(7)) >> 7):
+	 printf("\nOutput: %d \n",  (conf & BIT(7)) >> 7);
 
 	//Null Count - indica se está à espera de um novo valor
-	 printf("\nNull Count: %d \n",  (conf & BIT(6)) >> 6):
+	 printf("Null Count: %d \n",  (conf & BIT(6)) >> 6);
 
 	// Type of Access
 	if (((conf & BIT(5)) >> 5) == 0 && ((conf & BIT(4)) >> 4) == 1)
@@ -127,8 +128,7 @@ int timer_test_int(unsigned long time) {
 	// usado para evitar chamar a função driver_receive várias vezes
 	int receive;
 	counter = 0; // Inicializa o contador
-	
-	timer_subscribe_int;
+	timer_subscribe_int();
 	// condição verdadeira, sempre que é multiplo de 60( de 60 em 60 segundos )
 	while(counter <= time*60) {
 	/* Get a request message. */
@@ -140,8 +140,12 @@ int timer_test_int(unsigned long time) {
 	if (is_ipc_notify(ipc_status)) { /* received notification */
 		switch (_ENDPOINT_P(msg.m_source)) {
 			case HARDWARE: /* hardware interrupt notification */
-				if (msg.NOTIFY_ARG & TIMER0_IRQ) { /* subscribed interrupt */
-	                    time_int_handler();  /* process it */
+				if (msg.NOTIFY_ARG & BIT(TIMER_HOOK_BIT)) { /* subscribed interrupt */
+						timer_int_handler();  /* process it */
+	                    if(counter % 60 == 0){
+	                    	printf("\tSucesso\n");
+	                    }
+
 				}
 						break;
 				default:
@@ -158,14 +162,19 @@ int timer_test_int(unsigned long time) {
 
 int timer_test_config(unsigned long timer) {
 	unsigned char st;
-	int get_conf, display_conf;
-	get_conf = timer_get_conf(timer, &st);
-	display_conf  = timer_diplay_conf(st);
 	// Confirma se nenhuma das funções chamadas dá erro
-	if (get_conf == 0 && display_conf == 0 )
+	if (timer_get_conf(timer, &st) != 0)
 	{
-		return 0;
+		printf("ERROR: Timer ranges from 0 to 2 \n");
+		return 1;
 	}
 	else
-		return 1;
+	{
+		// Só imprime se get_config não der erro
+		if (timer_display_conf(st) != 0)
+			return 1;
+		else
+			return 0;
+	}
+
 }
