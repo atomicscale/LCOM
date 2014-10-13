@@ -2,17 +2,21 @@
 #include <minix/drivers.h>
 #include <minix/com.h>
 #include "i8254.h"
-
+// Variaveis globais
 unsigned long counter;
 static int hook_id;
 
 int timer_set_square(unsigned long timer, unsigned long freq) {
+	// configura o read-back command
 	unsigned char read_back = TIMER_SQR_WAVE | TIMER_BIN | (TIMER_0 + timer) | TIMER_LSB_MSB;
+	// calcula a frequencia a ser utilizada
 	unsigned long new_freq = TIMER_FREQ / freq;
-	unsigned char lsb = new_freq & 0xFF; // tem que se passar 1 byte de cada vez
+	// tem que se passar 1 byte de cada vez, o lsb, seguido do msb
+	unsigned char lsb = new_freq & 0xFF;
 	unsigned char msb = new_freq >> 8;
 	if (new_freq < 0xFFFF)
 	{
+		// informa-se o controlar e de seguida passa-se o lsb e o msb
 		sys_outb(TIMER_CTRL, read_back);
 		sys_outb(TIMER_0 + timer, lsb);
 		sys_outb(TIMER_0 + timer, msb);
@@ -23,26 +27,39 @@ int timer_set_square(unsigned long timer, unsigned long freq) {
 }
 
 int timer_subscribe_int(void ) {
-	if (sys_irqsetpolicy(TIMER0_IRQ, IRQ_REENABLE, &hook_id) != 0 || sys_irqenable(&hook_id) != 0) //The policy you should specify in sys_irqsetpolicy() is IRQ_REENABLE, so that the generic interrupt handler will acknowledge the interrupt,
+	// atualiza hook_id, passando a ser 0
+	hook_id = TIMER_HOOK_BIT;
+	/*The policy you should specify in sys_irqsetpolicy() is IRQ_REENABLE, so
+	that the generic interrupt handler will acknowledge the interrupt. */
+	if (sys_irqsetpolicy(TIMER0_IRQ, IRQ_REENABLE, &hook_id) != 0 || sys_irqenable(&hook_id) != 0)
 		return -1;
-		return BIT(hook_id);
+		return hook_id;
 }
 
 int timer_unsubscribe_int() {
-	if(sys_irqrmpolicy(&hook_id) != 0 || sys_irqdisable(&hook_id) != 0) //sys_irqrmpolicy(int *hook_id) Unsubscribes a previous interrupt notification,
-		return -1;																//by specifying a pointer to thehook_id returned by the kernel																	//sys_irqdisable(int *hook_id) Masks an interrupt line associated with a previously subscribed interrupt notification,
-		return 0;										 						//by specifying a pointer to the hook_id returned by the kernel
+	/*sys_irqrmpolicy(int *hook_id) Unsubscribes a previous interrupt notification.
+
+	sys_irqdisable(int *hook_id) Masks an interrupt line associated
+	with a previously subscribed interrupt notification.*/
+	if(sys_irqrmpolicy(&hook_id) != 0 || sys_irqdisable(&hook_id) != 0)
+		return -1;
+		return 0;
 }
 
 void timer_int_handler() {
+	// Incrementa a variavel global -> contador
 	counter++;
 }
 
 int timer_get_conf(unsigned long timer, unsigned char *st) {
+	// Configura o read-back command
 	unsigned char read_back = TIMER_RB_CMD | TIMER_RB_SEL(timer) | TIMER_RB_COUNT_;
+	// invoca sys_outb
 	sys_outb(TIMER_CTRL, read_back);
 
-	if (timer == 0 || timer == 1 || timer == 2){
+	if (timer == 0 || timer == 1 || timer == 2) // 0 <= timer <= 2
+	{
+		// invoca sys_inb
 		sys_inb(TIMER_0 + timer,(unsigned long int *) st);
 		return 0;
 	}
@@ -96,6 +113,7 @@ int timer_display_conf(unsigned char conf) {
 }
 
 int timer_test_square(unsigned long freq) {
+	//chama a função timer_set_square com timer0
 	if (!timer_set_square(0, freq))
 		return 0;
 	else
@@ -106,12 +124,13 @@ int timer_test_int(unsigned long time) {
 
 	int ipc_status;
 	message msg;
-	int receive; // usado para evitar chamar a função driver_receive várias vezes
+	// usado para evitar chamar a função driver_receive várias vezes
+	int receive;
 	counter = 0; // Inicializa o contador
 	
 	timer_subscribe_int;
-
-	while(counter <= time*60) { /* You may want to use a different condition */
+	// condição verdadeira, sempre que é multiplo de 60( de 60 em 60 segundos )
+	while(counter <= time*60) {
 	/* Get a request message. */
 			receive = driver_receive(ANY, &msg, &ipc_status);
 		if (receive != 0 ) {
@@ -139,10 +158,11 @@ int timer_test_int(unsigned long time) {
 
 int timer_test_config(unsigned long timer) {
 	unsigned char st;
-	int n1, n2;
+	int get_conf, display_conf;
 	get_conf = timer_get_conf(timer, &st);
 	display_conf  = timer_diplay_conf(st);
-	if (get_conf == 0 && display_conf == 0 ) // Confirma se nenhuma das funções chamadas dá erro
+	// Confirma se nenhuma das funções chamadas dá erro
+	if (get_conf == 0 && display_conf == 0 )
 	{
 		return 0;
 	}

@@ -12,6 +12,7 @@
 #define BIT(n) (0x01<<(n))
 
 #define TIMER0_IRQ	        0    /**< @brief Timer 0 IRQ line */
+#define TIMER_HOOK_BIT		0	// usado na função timer_subscribe_int()
 
 /* I/O port addresses */
 
