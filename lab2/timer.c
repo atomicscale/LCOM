@@ -14,7 +14,7 @@ int timer_set_square(unsigned long timer, unsigned long freq) {
 	// tem que se passar 1 byte de cada vez, o lsb, seguido do msb
 	unsigned char lsb = new_freq & 0xFF;
 	unsigned char msb = new_freq >> 8;
-	if (new_freq < 0xFFFF)
+	if (new_freq <= TIMER_FREQ && new_freq >= TIMER_MIN_FREQ)
 	{
 		// informa-se o controlar e de seguida passa-se o lsb e o msb
 		sys_outb(TIMER_CTRL, read_back);
@@ -23,7 +23,10 @@ int timer_set_square(unsigned long timer, unsigned long freq) {
 		return 0;
 	}
 	else
+	{
+		printf("ERROR: freq out of range \n");
 		return 1;
+	}
 }
 
 int timer_subscribe_int(void ) {
