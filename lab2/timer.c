@@ -35,9 +35,14 @@ int timer_subscribe_int(void ) {
 	/*The policy you should specify in sys_irqsetpolicy() is IRQ_REENABLE, so
 	that the generic interrupt handler will acknowledge the interrupt. */
 	if (sys_irqsetpolicy(TIMER0_IRQ, IRQ_REENABLE, &hook_id) != 0 || sys_irqenable(&hook_id) != 0)
+	{
+		printf("\ntimer_subscribe_int() failed \n");
 		return -1;
+	}
 	else
+	{
 		return TIMER_HOOK_BIT;
+	}
 }
 
 int timer_unsubscribe_int() {
@@ -45,9 +50,18 @@ int timer_unsubscribe_int() {
 
 	sys_irqdisable(int *hook_id) Masks an interrupt line associated
 	with a previously subscribed interrupt notification.*/
-	if(sys_irqrmpolicy(&hook_id) != 0 || sys_irqdisable(&hook_id) != 0)
-		return -1;
-		return 0;
+
+	if (sys_irqdisable(&hook_id) != 0) {
+		printf("\ntimer_unsubscribe_int() failed \n");
+		return 1;
+	}
+
+    if (sys_irqrmpolicy(&hook_id) != 0) {
+    	printf("\ntimer_unsubscribe_int() failed \n");
+        return 1;
+    }
+
+    return 0;
 }
 
 void timer_int_handler() {
@@ -131,6 +145,7 @@ int timer_test_int(unsigned long time) {
 	// usado para evitar chamar a função driver_receive várias vezes
 	int receive;
 	counter = 0; // Inicializa o contador
+	// subscribe_int() já verifica se não há problemas.
 	timer_subscribe_int();
 	// condição verdadeira, sempre que é multiplo de 60( de 60 em 60 segundos )
 	while(counter <= time*60) {
@@ -146,7 +161,7 @@ int timer_test_int(unsigned long time) {
 				if (msg.NOTIFY_ARG & BIT(TIMER_HOOK_BIT)) { /* subscribed interrupt */
 						timer_int_handler();  /* process it */
 	                    if(counter % 60 == 0){
-	                    	printf("\tSucesso\n");
+	                    	printf("\tSucess\n");
 	                    }
 
 				}
@@ -158,8 +173,8 @@ int timer_test_int(unsigned long time) {
 	/* no standard messages expected: do nothing */
 	}
 }
+	// unsubscribe_int() já verifica se não há problemas.
 	timer_unsubscribe_int();
-
 	return 0;
 }
 
