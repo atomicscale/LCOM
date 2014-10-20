@@ -1,5 +1,4 @@
 #pragma once
-#define KBD_HOOK_BIT 1
 
 /// Keys
 typedef enum {
@@ -112,4 +111,6 @@ int kbd_subscribe();
 
 int kbd_unsubscribe();
 
-void kbd_handler();
+void kbd_handler_c(unsigned long scancode);
+
+void kbd_handler_asm();
