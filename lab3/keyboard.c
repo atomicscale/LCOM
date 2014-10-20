@@ -45,15 +45,15 @@ int kbd_unsubscribe() {
 
 void kbd_handler_c(unsigned long scancode) {
 	//Falta implementar quando scancode == 0xE0
-		if (KEY_UP(scancode)) {
-			printf("Breakcode: 0x%X\n", scancode);
-		}
-		else if (KEY_DOWN(scancode)) {
-			printf("Makecode: 0x%X\n", scancode);
-		}
+	if (KEY_UP(scancode)) {
+		printf("Breakcode: 0x%X\n", scancode);
+	} else if (KEY_DOWN(scancode)) {
+		printf("Makecode: 0x%X\n", scancode);
+	}
 
 	if (scancode == 0x81)
-		printf("\tkbd_handler_c stopped, type any letter and press Backspace to continue!\n");
+		printf(
+				"\tkbd_handler_c stopped, type any letter and press Backspace to continue!\n");
 
 }
 
