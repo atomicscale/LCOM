@@ -1,5 +1,9 @@
 #pragma once
 
+#define KEY_DOWN(k) (k)
+#define KEY_UP(k) (0x80 & k)
+#define MSB BIT(7)
+
 /// Keys
 typedef enum {
     KEY_NONE = 0x0000,
