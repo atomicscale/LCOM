@@ -1,11 +1,9 @@
-# Makefile for the lab1 driver (based on that of hello).
-
 COMPILER_TYPE= gnu
 
 CC=gcc
 
 PROG=	lab3
-SRCS=	lab3.c test3.c 
+SRCS=	lab3.c test3.c kbc.c keyboard.c
 
 CCFLAGS= -Wall
 
