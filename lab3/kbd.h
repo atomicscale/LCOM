@@ -1,5 +1,5 @@
 #pragma once
-
+#define KBD_HOOK_BIT 1
 
 /// Keys
 typedef enum {
@@ -106,3 +106,10 @@ typedef enum {
     KEY_CNTX = 0xE05D,
     KEY_END = 0xE04F
 } KEY;
+
+
+int kbd_subscribe();
+
+int kbd_unsubscribe();
+
+void kbd_handler();
