@@ -8,9 +8,9 @@
 unsigned long counter;
 
 int kbd_test_scan(unsigned short ass) {
-	unsigned long scancode = 0;
 	int ipc_status;
 	message msg;
+	int validation = 0;
 
 	// usado para evitar chamar a função driver_receive várias vezes
 	int receive;
@@ -18,8 +18,8 @@ int kbd_test_scan(unsigned short ass) {
 	// kbd_subscribe() já verifica se não há problemas.
 	int irq_set = kbd_subscribe();
 
-	// condição verdadeira, sempre que é multiplo de 60( de 60 em 60 segundos )
-	while (scancode != 0x81) {
+	//Quando tecla esc é libertada, pára
+	while (!validation) {
 		/* Get a request message. */
 		receive = driver_receive(ANY, &msg, &ipc_status);
 		if (receive != 0) {
@@ -31,8 +31,7 @@ int kbd_test_scan(unsigned short ass) {
 			switch (_ENDPOINT_P(msg.m_source)) {
 			case HARDWARE: /* hardware interrupt notification */
 				if (msg.NOTIFY_ARG & irq_set) { /* subscribed interrupt */
-					scancode = kbc_read();
-					kbd_handler_c(scancode); /* process it */
+					validation = kbd_handler_c(); /* process it */
 				}
 				break;
 			default:
@@ -42,7 +41,7 @@ int kbd_test_scan(unsigned short ass) {
 			/* no standard messages expected: do nothing */
 		}
 	}
-	// unsubscribe_int() já verifica se não há problemas.
+	// kbd_unsubscribe_int() já verifica se não há problemas.
 	kbd_unsubscribe();
 	return 0;
 }

@@ -3,6 +3,7 @@
 #define KEY_DOWN(k) (k)
 #define KEY_UP(k) (0x80 | k)
 #define MSB BIT(7)
+//#define BYTE_0xE0 (0xE0 << 8)
 
 /// Keys
 typedef enum {
@@ -115,6 +116,6 @@ int kbd_subscribe();
 
 int kbd_unsubscribe();
 
-void kbd_handler_c(unsigned long scancode);
+int kbd_handler_c();
 
 void kbd_handler_asm();

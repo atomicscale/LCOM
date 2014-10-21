@@ -43,17 +43,30 @@ int kbd_unsubscribe() {
 	return 0;
 }
 
-void kbd_handler_c(unsigned long scancode) {
-	//Falta implementar quando scancode == 0xE0
-	if (scancode & 0x80)
-		printf("Breakcode: 0x%X\n", scancode);
+int kbd_handler_c() {
+	unsigned long long scancode = kbc_read();
+	if (scancode != -1)
+	{
+		if (scancode == KEY_UP(KEY_ESC))
+		{
+			printf("\n\tkbd_test_scan() stopped, press ENTER to continue!\n");
+			return 1;
+		}
+		else
+		{
+			if (scancode == 0xe0)
+			{
+				scancode = (scancode << 8) | kbc_read();
+			}
+			if (scancode & 0x80)
+				printf("\tBreakcode: 0x%X\n", scancode);
+			else
+				printf("\tMakecode: 0x%X\n", scancode);
+			return 0;
+		}
+	}
 	else
-		printf("Makecode: 0x%X\n", scancode);
-
-	if (scancode == KEY_UP(KEY_ESC))
-		printf(
-				"\tkbd_handler_c stopped, type any letter and press Backspace to continue!\n");
-
+		return 0;
 }
 
 void kbd_handler_asm() {
