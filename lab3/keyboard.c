@@ -55,9 +55,8 @@ int kbd_handler_c() {
 		else
 		{
 			if (scancode == 0xe0)
-			{
 				scancode = (scancode << 8) | kbc_read();
-			}
+
 			if (scancode & 0x80)
 				printf("\tBreakcode: 0x%X\n", scancode);
 			else
