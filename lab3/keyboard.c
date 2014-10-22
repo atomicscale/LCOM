@@ -45,26 +45,31 @@ int kbd_unsubscribe() {
 
 int kbd_handler_c() {
 	unsigned long long scancode = kbc_read();
-	if (scancode != -1)
-	{
-		if (scancode == KEY_UP(KEY_ESC))
-		{
+	if (scancode != -1) {
+		if (scancode == KEY_UP(KEY_ESC)) {
 			printf("\n\tkbd_test_scan() stopped, press ENTER to continue!\n");
 			return 1;
-		}
-		else
-		{
+		} else {
 			if (scancode == 0xe0)
 				scancode = (scancode << 8) | kbc_read();
 
+			else if (scancode == 0xe1) {
+				int i;
+				for (i = 0; i < 5; ++i)
+					scancode = (scancode << 8) | kbc_read();
+				printf("\tMakecode: 0x");
+				for (i = 5; i >= 0; --i)
+					printf("%X", (scancode >> 8 * i) & 0xFF);
+				printf("\n");
+				return 0;
+			}
 			if (scancode & 0x80)
 				printf("\tBreakcode: 0x%X\n", scancode);
 			else
 				printf("\tMakecode: 0x%X\n", scancode);
 			return 0;
 		}
-	}
-	else
+	} else
 		return 0;
 }
 
