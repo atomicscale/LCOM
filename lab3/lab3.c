@@ -1,4 +1,5 @@
 #include <minix/drivers.h>
+#include "test3.h"
 
 static int proc_args(int argc, char *argv[]);
 static unsigned long parse_ulong(char *str, int base);
@@ -51,7 +52,7 @@ static int proc_args(int argc, char *argv[]) {
 
 	//Test_leds
 	else if (strncmp(argv[1], "test_leds", strlen("test_leds")) == 0) {
-		if (argc != 4) {
+		if (argc != 3) {
 			printf(
 					"kbd:: wrong no of arguments for test of kbd_test_leds() \n");
 			return 1;
@@ -61,7 +62,9 @@ static int proc_args(int argc, char *argv[]) {
 		if ((*leds = parse_ulong(argv[3], 10)) == ULONG_MAX)
 			return 1;
 		printf("kbd:: kbd_test_leds(%d, %d)\n", n, *leds);
-		kbd_test_leds(n, *leds);
+		//kbd_test_leds(n, leds);
+		unsigned short l[] = {0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2,  0, 1, 2, 0, 1, 2};
+		kbd_test_leds(12, l);
 		return 0;
 	}
 	// test_inf
