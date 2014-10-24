@@ -52,18 +52,14 @@ static int proc_args(int argc, char *argv[]) {
 
 	//Test_leds
 	else if (strncmp(argv[1], "test_leds", strlen("test_leds")) == 0) {
-		if (argc != 3) {
+		if (argc != 2) {
 			printf(
 					"kbd:: wrong no of arguments for test of kbd_test_leds() \n");
 			return 1;
 		}
-		if ((n = parse_ulong(argv[2], 10)) == ULONG_MAX)
-			return 1;
-		if ((*leds = parse_ulong(argv[3], 10)) == ULONG_MAX)
-			return 1;
-		printf("kbd:: kbd_test_leds(%d, %d)\n", n, *leds);
+		printf("kbd:: kbd_test_leds()\n");
 		//kbd_test_leds(n, leds);
-		unsigned short l[] = {0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2,  0, 1, 2, 0, 1, 2};
+		unsigned short l[12] = {0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2};
 		kbd_test_leds(12, l);
 		return 0;
 	}
