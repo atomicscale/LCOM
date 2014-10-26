@@ -3,7 +3,7 @@ COMPILER_TYPE= gnu
 CC=gcc
 
 PROG=	lab3
-SRCS=	lab3.c test3.c kbc.c keyboard.c
+SRCS=	lab3.c test3.c kbc.c keyboard.c timer.c
 
 CCFLAGS= -Wall
 
