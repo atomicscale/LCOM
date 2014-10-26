@@ -160,10 +160,6 @@ int timer_test_int(unsigned long time) {
 			case HARDWARE: /* hardware interrupt notification */
 				if (msg.NOTIFY_ARG & BIT(TIMER_HOOK_BIT)) { /* subscribed interrupt */
 						timer_int_handler();  /* process it */
-	                    if(counter % 60 == 0){
-	                    	printf("\tSucess\n");
-	                    }
-
 				}
 						break;
 				default:

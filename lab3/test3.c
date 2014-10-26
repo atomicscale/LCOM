@@ -48,14 +48,14 @@ int kbd_test_scan(unsigned short ass) {
 }
 
 int kbd_test_leds(unsigned short n, unsigned short *leds) {
-	int counter = 0;
+	int i = 0;
 	unsigned char mask = 0;
-	while (counter < n) {
+	while (i < n) {
 		/* Get a request message. */
-		mask ^= BIT(leds[counter]);
+		mask ^= BIT(leds[i]);
 		kbc_write2(SW_LEDS, mask);
-		counter++;
-		sleep(1);
+		i++;
+		timer_test_int(1);
 	}
 	return 0;
 }
