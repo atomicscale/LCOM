@@ -1,9 +1,7 @@
 #include "kbc.h"
 #include "i8042.h"
 
-#define KBC_IO_MAX_TRIES 3
 
-//alterar nome
 int kbc_write(unsigned char cmd) {
 	unsigned long stat;
 
@@ -15,10 +13,10 @@ int kbc_write(unsigned char cmd) {
 		return 0;
 	}
 	tickdelay(micros_to_ticks(DELAY_US));
-	//printf ()
 	return -1;
 }
 
+//Usado para a função test_leds, chama a função kbc_write
 int kbc_write2(unsigned char cmd, unsigned char arg) {
 	unsigned long stat;
 	int kbc_tries = 0;
@@ -62,6 +60,5 @@ int kbc_read() {
 		tickdelay(micros_to_ticks(DELAY_US));
 		kbc_tries++;
 	}
-	//printf ()
 	return -1;
 }

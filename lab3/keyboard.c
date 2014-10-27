@@ -12,8 +12,7 @@ int kbd_subscribe() {
 
 	int bitmask = BIT(hook_id);
 
-	/*The policy you should specify in sys_irqsetpolicy() is IRQ_REENABLE, so
-	 that the generic interrupt handler will acknowledge the interrupt. */
+	/*The policy you should specify in sys_irqsetpolicy() is IRQ_REENABLE | IRQ_REENABLE*/
 	if (sys_irqsetpolicy(IRQ_KBD, IRQ_REENABLE | IRQ_EXCLUSIVE, &hook_id) != OK
 			|| sys_irqenable(&hook_id) != OK) {
 		printf("\nkbd_subscribe() failed \n");
@@ -44,35 +43,61 @@ int kbd_unsubscribe() {
 }
 
 int kbd_handler_c() {
-	unsigned long long scancode = kbc_read();
-	if (scancode != -1) {
-		if (scancode == KEY_UP(KEY_ESC)) {
+	unsigned long long scan_code = kbc_read();
+	if (scan_code != -1) {
+		if (scan_code == KEY_UP(KEY_ESC)) {
 			printf("\n\tkbd_test_scan() stopped, press ENTER to continue!\n");
 			return 1;
 		} else {
-			if (scancode == 0xe0)
-				scancode = (scancode << 8) | kbc_read();
-
-			else if (scancode == 0xe1) {
+			if (scan_code == 0xe0)
+				scan_code = (scan_code << 8) | kbc_read();
+			// Pause key, 6bytes
+			else if (scan_code == 0xe1) {
 				int i;
 				for (i = 0; i < 5; ++i)
-					scancode = (scancode << 8) | kbc_read();
+					scan_code = (scan_code << 8) | kbc_read();
 				printf("\tMakecode: 0x");
 				for (i = 5; i >= 0; --i)
-					printf("%X", (scancode >> 8 * i) & 0xFF);
+					printf("%X", (scan_code >> 8 * i) & 0xFF);
 				printf("\n");
 				return 0;
 			}
-			if (scancode & 0x80)
-				printf("\tBreakcode: 0x%X\n", scancode);
+			if (scan_code & 0x80)
+				printf("\tBreakcode: 0x%X\n", scan_code);
 			else
-				printf("\tMakecode: 0x%X\n", scancode);
+				printf("\tMakecode: 0x%X\n", scan_code);
 			return 0;
 		}
 	} else
 		return 0;
 }
 
-void kbd_handler_asm() {
-
+int kbd_handler_asm()
+{
+	unsigned long long scan_code = handler_asm();
+	if (scan_code != -1) {
+		if (scan_code == KEY_UP(KEY_ESC)) {
+			printf("\n\tkbd_test_scan() stopped, press ENTER to continue!\n");
+			return 1;
+		} else {
+			if (scan_code == 0xe0)
+			{
+				scan_code = handler_asm();
+				if (scan_code & 0x80)
+					printf("\tBreakcode: 0xE0%X\n", scan_code);
+				else
+					printf("\tMakecode: 0xE0%X\n", scan_code);
+				return 0;
+			}
+			else
+			{
+			if (scan_code & 0x80)
+				printf("\tBreakcode: 0x%X\n", scan_code);
+			else
+				printf("\tMakecode: 0x%X\n", scan_code);
+			return 0;
+			}
+		}
+	} else
+		return 0;
 }

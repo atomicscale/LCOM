@@ -32,7 +32,10 @@ int kbd_test_scan(unsigned short ass) {
 			switch (_ENDPOINT_P(msg.m_source)) {
 			case HARDWARE: /* hardware interrupt notification */
 				if (msg.NOTIFY_ARG & irq_set) { /* subscribed interrupt */
-					validation = kbd_handler_c(); /* process it */
+					if (ass == 0)
+						validation = kbd_handler_c(); /* process it */
+					else
+						validation = kbd_handler_asm();
 				}
 				break;
 			default:
@@ -72,7 +75,7 @@ int kbd_test_timed_scan(unsigned short n) {
 	int irq_set1 = kbd_subscribe();
 	int irq_set2 = timer_subscribe_int();
 
-	//Quando tecla esc é libertada, pára
+	//Para quando a tecla ESC é libertada, ou quando passam n segundos sem input
 	while (!validation) {
 		/* Get a request message. */
 		receive = driver_receive(ANY, &msg, &ipc_status);

@@ -9,6 +9,7 @@ static void print_usage(char *argv[]);
 int main(int argc, char** argv) {
 	/* Initialize service */
 	sef_startup();
+	sys_enable_iop(SELF);
 	printf("test\n");
 
 	if (argc == 1) {

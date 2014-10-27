@@ -112,10 +112,11 @@ typedef enum {
 } KEY;
 
 
+
 int kbd_subscribe();
 
 int kbd_unsubscribe();
 
 int kbd_handler_c();
 
-void kbd_handler_asm();
+int kbd_handler_asm();
