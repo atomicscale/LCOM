@@ -73,7 +73,7 @@ static int proc_args(int argc, char *argv[]) {
 		kbd_test_leds(argc - 2, l);
 		return 0;
 	}
-	// test_inf
+	// test_timed_scan
 	else if (strncmp(argv[1], "test_timed_scan", strlen("test_timed_scan"))
 			== 0) {
 		if (argc != 3) {

@@ -44,14 +44,16 @@ int kbd_unsubscribe() {
 
 int kbd_handler_c() {
 	unsigned long long scan_code = kbc_read();
+	// utilização da macro KEY_UP(KEY_ESC) para terminar
 	if (scan_code != -1) {
 		if (scan_code == KEY_UP(KEY_ESC)) {
 			printf("\n\tkbd_test_scan() stopped, press ENTER to continue!\n");
 			return 1;
 		} else {
+			// Scan code para teclas de 2bytes
 			if (scan_code == 0xe0)
 				scan_code = (scan_code << 8) | kbc_read();
-			// Pause key, 6bytes
+			// Pause key, 6bytes, impressao byte a byte
 			else if (scan_code == 0xe1) {
 				int i;
 				for (i = 0; i < 5; ++i)
@@ -62,6 +64,7 @@ int kbd_handler_c() {
 				printf("\n");
 				return 0;
 			}
+			//verifica se tecla esta premida ou foi largada
 			if (scan_code & 0x80)
 				printf("\tBreakcode: 0x%X\n", scan_code);
 			else
@@ -71,7 +74,7 @@ int kbd_handler_c() {
 	} else
 		return 0;
 }
-// Só funciona para teclas com 1 byte
+// Só funciona para 1 byte, utiliza handler_asm(), escrito em assembly, para ler
 int kbd_handler_asm()
 {
 	unsigned long long scan_code = handler_asm();

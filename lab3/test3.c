@@ -7,7 +7,7 @@
 
 //Variaveis globais
 unsigned long counter;
-
+// ass se for 0, utiliza o handler em C, outro valor executa em Assembly
 int kbd_test_scan(unsigned short ass) {
 	int ipc_status;
 	message msg;
@@ -54,10 +54,10 @@ int kbd_test_leds(unsigned short n, unsigned short *leds) {
 	int i = 0;
 	unsigned char mask = 0;
 	while (i < n) {
-		/* Get a request message. */
 		mask ^= BIT(leds[i]);
 		kbc_write2(SW_LEDS, mask);
 		i++;
+		// espera um segundo entre cada elemento do array, utilizando o timer
 		timer_test_int(1);
 	}
 	return 0;
@@ -71,7 +71,7 @@ int kbd_test_timed_scan(unsigned short n) {
 	// usado para evitar chamar a função driver_receive várias vezes
 	int receive;
 
-	// kbd_subscribe() já verifica se não há problemas.
+	//subscribe() já verifica se não há problemas.
 	int irq_set1 = kbd_subscribe();
 	int irq_set2 = timer_subscribe_int();
 
@@ -107,7 +107,7 @@ int kbd_test_timed_scan(unsigned short n) {
 			/* no standard messages expected: do nothing */
 		}
 	}
-	// kbd_unsubscribe_int() já verifica se não há problemas.
+	// unsubscribe_int() já verifica se não há problemas.
 	kbd_unsubscribe();
 	timer_unsubscribe_int();
 	return 0;
