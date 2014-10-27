@@ -10,7 +10,6 @@ int main(int argc, char** argv) {
 	/* Initialize service */
 	sef_startup();
 	sys_enable_iop(SELF);
-	printf("test\n");
 
 	if (argc == 1) {
 		print_usage(argv);
@@ -53,15 +52,25 @@ static int proc_args(int argc, char *argv[]) {
 
 	//Test_leds
 	else if (strncmp(argv[1], "test_leds", strlen("test_leds")) == 0) {
-		if (argc != 2) {
+		if (argc < 3) {
 			printf(
 					"kbd:: wrong no of arguments for test of kbd_test_leds() \n");
 			return 1;
 		}
 		printf("kbd:: kbd_test_leds()\n");
-		//kbd_test_leds(n, leds);
-		unsigned short l[12] = {0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2};
-		kbd_test_leds(12, l);
+		unsigned short *l;
+		l = malloc((argc - 2) * sizeof(unsigned short));
+		int i=0;
+		for (i; i<argc - 2; i++)
+		{
+			l[i]=parse_ulong(argv[2+i], 10);
+			if (l[i] > 2 || l[i] < 0)
+			{
+				printf("\nError: 0 <= led's bit <= 2\n\n");
+				return 1;
+			}
+		}
+		kbd_test_leds(argc - 2, l);
 		return 0;
 	}
 	// test_inf
