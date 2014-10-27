@@ -71,7 +71,7 @@ int kbd_handler_c() {
 	} else
 		return 0;
 }
-
+// Só funciona para teclas com 1 byte
 int kbd_handler_asm()
 {
 	unsigned long long scan_code = handler_asm();
@@ -80,23 +80,11 @@ int kbd_handler_asm()
 			printf("\n\tkbd_test_scan() stopped, press ENTER to continue!\n");
 			return 1;
 		} else {
-			if (scan_code == 0xe0)
-			{
-				scan_code = handler_asm();
-				if (scan_code & 0x80)
-					printf("\tBreakcode: 0xE0%X\n", scan_code);
-				else
-					printf("\tMakecode: 0xE0%X\n", scan_code);
-				return 0;
-			}
-			else
-			{
 			if (scan_code & 0x80)
 				printf("\tBreakcode: 0x%X\n", scan_code);
 			else
 				printf("\tMakecode: 0x%X\n", scan_code);
 			return 0;
-			}
 		}
 	} else
 		return 0;
