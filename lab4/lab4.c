@@ -74,11 +74,11 @@ static int proc_args(int argc, char *argv[]) {
 		printf("mouse:: test_config() \n");
 		test_config();
 		return 0;
+	}
 	// Test_gesture
 	else if (strncmp(argv[1], "test_gesture", strlen("test_gesture")) == 0) {
 		if (argc != 4) {
-			printf(
-					"mouse:: wrong no of arguments for test of test_gesture() \n");
+			printf("mouse:: wrong no of arguments for test of test_gesture() \n");
 			return 1;
 		}
 		if ((length = parse_long(argv[2], 10)) == ULONG_MAX)
