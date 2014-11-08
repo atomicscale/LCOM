@@ -7,28 +7,33 @@
 #include "i8042.h"
 #include "test4.h"
 
-int mouse_handler(packet *pack) {
+static unsigned long p[3] = {0, 0, 0};
+static unsigned long counter = 0;
+static unsigned long interrupts = 0;
+
+int mouse_handler() {
 	int i;
 	unsigned long data = 0;
-	if (pack->interrupts == 0) {
+	if (interrupts == 0) {
 		for (i = 0; i < KBC_IO_MAX_TRIES; i++) {
 			mouse_read(&data);
-			pack->p[0] = data;
-			if (pack->p[0] & BIT(3)) {
+			p[0] = data;
+			if (p[0] & BIT(3)) {
 				break;
 			}
 		}
-		pack->counter++;
-		pack->interrupts = 1;
+		counter++;
+		interrupts = 1;
 	} else {
 		mouse_read(&data);
-		if (pack->counter == 0 && data & BIT(3) == 0) {
-			pack->interrupts = 0;
+		if (counter == 0 && data & BIT(3) == 0) {
+			interrupts = 0;
+			//continue;
 		}
-		pack->p[pack->counter++] = data;
-		if (pack->counter == 3) {
-			pack->interrupts = 0;
-			print(pack->p);
+		p[counter++] = data;
+		if (counter == 3) {
+			interrupts = 0;
+			print(p);
 		}
 	}
 	return 0;
@@ -61,12 +66,11 @@ int test_packet(unsigned short cnt) {
 	message msg;
 	int receive;
 	int irq_set = mouse_subscribe();
-	packet pack;
-	pack->counter = 0;
-	pack->interrupts = 0;
-
+	counter = 0;
+	interrupts = 0;
 	while (i < cnt * 3) {
 		receive = driver_receive(ANY, &msg, &ipc_status);
+		printf("passou receive\n");
 		if (receive != 0) {
 			printf("driver_receive failed with: %d", receive);
 			continue;
@@ -76,7 +80,8 @@ int test_packet(unsigned short cnt) {
 			switch (_ENDPOINT_P(msg.m_source)) {
 			case HARDWARE:
 				if (msg.NOTIFY_ARG & irq_set) {
-					mouse_handler(&packet);
+					mouse_handler();
+					printf("chegou handler\n");
 					i++;
 				}
 				break;

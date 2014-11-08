@@ -30,17 +30,18 @@ int mouse_read(unsigned long* val) {
 }
 
 int mouse_subscribe() {
-// atualiza hook_id, passando a ser 12
-	hook_id = IRQ_MOUSE;
+	mouse_write(DISABLE_STREAM);
+	if (sys_irqsetpolicy(IRQ_MOUSE, IRQ_REENABLE | IRQ_EXCLUSIVE, &hook_id) != 0){
+			printf("\nMouse_subscribe() failed \n");
+			return -1;
+	}
+	if (sys_irqenable(&hook_id) != 0) {
+			printf("\nMouse_subscribe() failed \n");
+			return -1;
+	}
 	mouse_write(STREAM_MODE);
 	mouse_write(ENABLE_PACKETS);
-	int bitmask = BIT(hook_id);
-	if (sys_irqsetpolicy(IRQ_MOUSE, IRQ_REENABLE | IRQ_EXCLUSIVE, &hook_id) != 0
-			|| sys_irqenable(&hook_id) != 0) {
-		printf("\nMouse_subscribe() failed \n");
-		return -1;
-	}
-	return bitmask;
+	return BIT(5);
 }
 
 int mouse_unsubscribe() {
@@ -48,7 +49,6 @@ int mouse_unsubscribe() {
 		printf("\nMouse_unsubscribe failed \n");
 		return 1;
 	}
-	mouse_write(DISABLE_STREAM);
 	return 0;
 }
 

@@ -9,6 +9,7 @@
 #define IBF BIT(1)
 #define TO_ERR BIT(6)
 #define PAR_ERR BIT(7)
+#define AUX BIT(5)
 
 #define IRQ_KBD 1
 
