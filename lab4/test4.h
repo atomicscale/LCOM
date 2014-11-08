@@ -1,8 +1,15 @@
 #ifndef __TEST4_H
 #define __TEST4_H
 
+typedef struct packet {
+	unsigned long p[3];
+	unsigned long counter;
+	unsigned long interrupts;
+} packet;
 
-int mouse_handler();
+int mouse_handler(packet *p);
+
+void print(unsigned long* a);
 
 /** @defgroup test4 test4
  * @{

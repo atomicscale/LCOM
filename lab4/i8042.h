@@ -29,5 +29,16 @@
 #define WRITE_BYTE 0xD4
 #define ENABLE_PACKETS 0xF4
 #define MOUSE_STATUS 0xE9
+#define STREAM_MODE 0xEA
+#define DISABLE_STREAM 0xF5
 #define IRQ_MOUSE 12
 #define DELAY_US    20000
+
+
+#define LEFT_B(b) ((b) & 1)
+#define RIGHT_B(b) (((b) >> 1) & 1)
+#define MIDDLE_B(b) (((b) >> 2) & 1)
+#define X_OVERFLOW(b) (((b) >> 6) & 1)
+#define Y_OVERFLOW(b) (((b) >> 7) & 1)
+#define X_NEGATIVE(b) (((b) >> 4) & 1)
+#define Y_NEGATIVE(b) (((b) >> 5) & 1)
