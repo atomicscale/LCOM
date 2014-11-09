@@ -5,11 +5,19 @@
 static int hook_id;
 
 int mouse_write(unsigned char cmd) {
-	if (kbc_write2(CMD_REG, WRITE_BYTE) == 0 && kbc_write2(DATA, cmd) == 0)
-		return 0;
-	else {
-		printf("mouse_write: write_kbc failed\n");
-		return -1;
+	unsigned long stat;
+	int i = 0;
+
+	for (i = 0; i < KBC_IO_MAX_TRIES; i++) {
+		sys_outb(CMD_REG, WRITE_BYTE);
+		tickdelay(micros_to_ticks(DELAY_US));
+		sys_outb(IN_BUF, cmd); /* no args command */
+		tickdelay(micros_to_ticks(DELAY_US));
+		sys_inb(OUT_BUF, &stat); /* assuming it returns OK */
+
+		if (stat == ACK) {
+			return 0;
+		}
 	}
 }
 
@@ -18,7 +26,7 @@ int mouse_read(unsigned long* val) {
 	int i = 0;
 	for (i = 0; i < KBC_IO_MAX_TRIES; i++) {
 		sys_inb(STAT_REG, &read);
-		if (read & OBF && read & AUX) {
+		if ((read & OBF) && (read & AUX)) {
 			if (sys_inb(OUT_BUF, val) != 0) {
 				return -1;
 			}
