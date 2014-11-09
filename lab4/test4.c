@@ -69,6 +69,7 @@ int test_packet(unsigned short cnt) {
 	message msg;
 	int receive;
 	int irq_set = mouse_subscribe();
+	unsigned long clean;
 	counter = 0;
 	interrupts = 0;
 	while (i < cnt * 3) {
@@ -95,6 +96,7 @@ int test_packet(unsigned short cnt) {
 	}
 	mouse_unsubscribe();
 	printf("\n\tpress ANY KEY to continue\n");
+	mouse_read(&clean); //Clean the buffer
 	return 0;
 }
 
@@ -103,6 +105,7 @@ int test_async(unsigned short idle_time) {
 	message msg;
 	int time = 0;
 	int receive;
+	unsigned long clean;
 	int irq_set_mouse = mouse_subscribe();
 	int irq_set_timer = timer_subscribe_int();
 	counter = 0;
@@ -134,6 +137,7 @@ int test_async(unsigned short idle_time) {
 	mouse_unsubscribe();
 	timer_unsubscribe_int();
 	printf("\n\tpress ANY KEY to continue\n");
+	mouse_read(&clean);
 	return 0;
 }
 
