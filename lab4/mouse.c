@@ -2,7 +2,7 @@
 #include "i8042.h"
 #include "mouse.h"
 
-static int hook_id;
+static int hook_id = MOUSE_HOOK_ID;
 
 int mouse_write(unsigned char cmd) {
 	unsigned long stat;
@@ -49,11 +49,15 @@ int mouse_subscribe() {
 	}
 	mouse_write(STREAM_MODE);
 	mouse_write(ENABLE_PACKETS);
-	return BIT(5);
+	return BIT(MOUSE_HOOK_ID);
 }
 
 int mouse_unsubscribe() {
-	if (sys_irqdisable(&hook_id) != 0 && sys_irqrmpolicy(&hook_id)) {
+	if (sys_irqdisable(&hook_id) != 0) {
+		printf("\nMouse_unsubscribe failed \n");
+		return 1;
+	}
+	if (sys_irqrmpolicy(&hook_id) != 0) {
 		printf("\nMouse_unsubscribe failed \n");
 		return 1;
 	}

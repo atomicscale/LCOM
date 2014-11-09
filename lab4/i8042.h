@@ -33,6 +33,7 @@
 #define STREAM_MODE 0xEA
 #define DISABLE_STREAM 0xF5
 #define IRQ_MOUSE 12
+#define MOUSE_HOOK_ID 12
 #define DELAY_US    20000
 
 
