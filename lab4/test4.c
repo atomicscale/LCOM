@@ -15,7 +15,7 @@ int mouse_handler() {
 	int i;
 	unsigned long data = 0;
 	if (interrupts == 0) {
-		for (i = 0; i < KBC_IO_MAX_TRIES; i++) {
+		while(1) {
 			mouse_read(&data);
 			if (data & BIT(3)) {
 				p[0] = data;
@@ -139,7 +139,40 @@ int test_async(unsigned short idle_time) {
 }
 
 int test_config(void) {
-	/* To be completed ... */
+	unsigned long data, res;
+	unsigned char a[3];
+	mouse_subscribe();
+	mouse_write(MOUSE_STATUS);
+	mouse_read(&data);
+	while (1) {
+		mouse_read(&data);
+		if ((BIT(7) & data) && (BIT(3) & res))
+			break;
+	}
+	a[0] = data;
+	while (1) {
+		mouse_read(&data);
+		if (data <= 3)
+			break;
+	}
+	a[1] = data;
+	tickdelay(micros_to_ticks(DELAY_US));
+	if (mouse_read(&data) != 0)
+		return -1;
+	a[2] = data;
+	printf("\n\tCONFIGURATION\n");
+	printf("\tMode: %s\n\tEnable: %d\n\tScaling: %s\n\tLB: %d\n\tMB: %d\n\tRB: %d\n\tResolution: %d count/mm\n\tSample Rate: %d\n",
+		MODE(a[0]) ? "Remote" : "Stream",
+		ENABLE(a[0]),
+		SCALING(a[0]) ? "1:1" : "2:1",
+		LEFT(a[0]),
+		MIDDLE(a[0]),
+		RIGHT(a[0]),
+		RESOLUTION(a[1]),
+		RATE(a[2]));
+	mouse_unsubscribe();
+	printf("\n\tpress ANY KEY to continue\n");
+	mouse_read(&res); /* clear out buffer */
 }
 
 int test_gesture(short length, unsigned short tolerance) {
