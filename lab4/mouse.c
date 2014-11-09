@@ -34,7 +34,7 @@ int mouse_read(unsigned long* val) {
 		}
 		tickdelay(micros_to_ticks(DELAY_US));
 	}
-	return 0;
+	return -1;
 }
 
 int mouse_subscribe() {

@@ -40,7 +40,6 @@ int mouse_handler() {
 }
 
 void print(unsigned long* a) {
-	printf("entrou print\n");
 	short p;
 	printf("\tB1=0x%x B2=0x%x B3=0x%x ", a[0], a[1], a[2]);
 	printf("LB=%d ", LEFT_B(a[0]) ? 1 : 0);
@@ -60,7 +59,7 @@ void print(unsigned long* a) {
 		p = a[2] & 0x00FF;
 	}
 	printf("Y=%d \n", p);
-
+	counter = 0;
 }
 
 int test_packet(unsigned short cnt) {
@@ -84,7 +83,6 @@ int test_packet(unsigned short cnt) {
 			case HARDWARE:
 				if (msg.NOTIFY_ARG & irq_set) {
 					mouse_handler();
-					printf("passou handler\n");
 					i++;
 				}
 				break;
@@ -121,7 +119,6 @@ int test_async(unsigned short idle_time) {
 			switch (_ENDPOINT_P(msg.m_source)) {
 			case HARDWARE:
 				if (msg.NOTIFY_ARG & irq_set_mouse) {
-					printf("handler\n");
 					mouse_handler();
 				}
 				if (msg.NOTIFY_ARG & irq_set_timer) {
