@@ -45,7 +45,7 @@ int mouse_subscribe() {
 			printf("\nMouse_subscribe() failed \n");
 			return -1;
 	}
-	//mouse_write(STREAM_MODE);
+	mouse_write(STREAM_MODE);
 	mouse_write(ENABLE_PACKETS);
 	return BIT(MOUSE_HOOK_ID);
 }
