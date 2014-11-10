@@ -1,4 +1,3 @@
-#include "kbc.h"
 #include "i8042.h"
 #include "mouse.h"
 
