@@ -37,7 +37,6 @@ int mouse_read(unsigned long* val) {
 }
 
 int mouse_subscribe() {
-	mouse_write(DISABLE_STREAM);
 	if (sys_irqsetpolicy(IRQ_MOUSE, IRQ_REENABLE | IRQ_EXCLUSIVE, &hook_id) != 0){
 			printf("\nMouse_subscribe() failed \n");
 			return -1;
@@ -46,7 +45,7 @@ int mouse_subscribe() {
 			printf("\nMouse_subscribe() failed \n");
 			return -1;
 	}
-	mouse_write(STREAM_MODE);
+	//mouse_write(STREAM_MODE);
 	mouse_write(ENABLE_PACKETS);
 	return BIT(MOUSE_HOOK_ID);
 }

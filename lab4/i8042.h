@@ -46,11 +46,11 @@
 #define Y_NEGATIVE(b) (((b) >> 5) & 1)
 
 //TEST_CONFIG
-#define MODE(b) (((b) >> 6) & 1)
-#define ENABLE(b) (((b) >> 5) & 1)
+#define MODE(b) !(((b) >> 6) & 1)
+#define ENABLE(b) !(((b) >> 5) & 1)
 #define SCALING(b) (((b) >> 4) & 1)
-#define LEFT(b) (((b) >> 3) & 1)
-#define MIDDLE(b) (((b) >> 2) & 1)
-#define RIGHT(b) (((b) >> 1) & 1)
+#define LEFT(b) !(((b) >> 3) & 1)
+#define MIDDLE(b) !(((b) >> 2) & 1)
+#define RIGHT(b) !(((b) >> 1) & 1)
 #define RESOLUTION(b) (0x1 << (b))
 #define RATE(b) ((b))

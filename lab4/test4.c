@@ -209,6 +209,7 @@ int test_async(unsigned short idle_time) {
 }
 
 int test_config(void) {
+	printf("\n\tTouch in the mouse\n\n");
 	unsigned long data, res;
 	unsigned char a[3];
 	mouse_subscribe();
