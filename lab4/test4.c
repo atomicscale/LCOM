@@ -38,7 +38,7 @@ int gesture_handler(short length, unsigned short tolerance) {
 			interrupts = 0;
 			counter = 0;
 			//prints
-			printf("sumX: %d left: %d ", sumOfX, Y, LEFT_B(p[0]));
+			printf("sumX: %d left: %d ", sumOfX, LEFT_B(p[0]));
 			if (Y_NEGATIVE(p[2])) {
 				auxY = p[2] | 0xFF00;
 			} else {
@@ -56,11 +56,15 @@ int gesture_handler(short length, unsigned short tolerance) {
 			if (Y < tolerance && LEFT_B(p[0])) {
 				sumOfX += auxX;
 				if (length > 0){
+					if (auxX < 0)
+						sumOfX = 0;
 					if (sumOfX >= length)
 						return 0;
 				}
 				else
 				{
+					if (auxX > 0)
+						sumOfX = 0;
 					if (sumOfX < length)
 						return 0;
 				}
