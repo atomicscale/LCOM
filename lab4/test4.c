@@ -80,7 +80,7 @@ int mouse_handler() {
 	int i;
 	unsigned long data = 0;
 	if (interrupts == 0) {
-		while (1) {
+		for (i = 0; i < KBC_IO_MAX_TRIES; i++) {
 			mouse_read(&data);
 			if (data & BIT(3)) {
 				p[0] = data;
