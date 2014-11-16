@@ -37,7 +37,7 @@ static unsigned v_res;		/* Vertical screen resolution in pixels */
 static unsigned bits_per_pixel; /* Number of VRAM bits per pixel */
 
 
-void *vg_init(unsigned short mode)
+void* vg_init(unsigned short mode)
 {
     unsigned int vram_size;
     struct mem_range mr;
@@ -49,9 +49,33 @@ void *vg_init(unsigned short mode)
     reg86.u.b.al = SET_VBE;
     reg86.u.w.bx = BIT(LINEAR_BIT) | mode;
 
-    h_res = 1;
-    v_res = 2;
-    bits_per_pixel = 3;
+	if (sys_int86(&reg86) != OK) {
+		printf("vg_init()::bios call didn't return 0\n");
+		return NULL;
+	}
+
+    h_res = H_RES;
+    v_res = V_RES;
+    bits_per_pixel = BITS_PER_PIXEL;
+
+    int r;
+
+    /* Allow memory mapping */
+
+    mr.mr_base = (phys_bytes) VRAM_PHYS_ADDR;
+    mr.mr_limit = mr.mr_base + (h_res * v_res);
+
+      if(sys_privctl(SELF, SYS_PRIV_ADD_MEM, &mr) != 0)
+    	  panic("video_txt: sys_privctl (ADD_MEM) failed: %d\n", r);
+
+      /* Map memory */
+
+      video_mem = vm_map_phys(SELF, (void *)mr.mr_base, h_res * v_res);
+
+      if(video_mem == MAP_FAILED)
+    	  panic("video_txt couldn't map video memory");
+
+      return video_mem;
 }
 
 
@@ -69,4 +93,41 @@ int vg_exit() {
       return 1;
   } else
       return 0;
+}
+
+__inline void draw_pixel(int x, int y, char color) {
+	if (x < H_RES && y < V_RES) {
+		*(video_mem + (y << 10) + x) = color;
+	}
+}
+
+int draw_rectangle(unsigned short xi, unsigned short yi, unsigned short xf,
+		unsigned short yf, char color) {
+	int x, y;
+
+	if (xi > H_RES || xf > H_RES) {
+		return 1;
+	}
+
+	if (yi > V_RES || yf > V_RES) {
+		return 1;
+	}
+
+	if (xf < xi) {
+		int temp = xi;
+		xi = xf;
+		xf = temp;
+	}
+
+	if(yf < yi){
+		int temp = yi;
+		yi = yf;
+		yf = temp;
+	}
+
+	for (y = yi; y < yf; y++) {
+		for (x = xi; x < xf; x++) {
+			draw_pixel(x, y, color);
+		}
+	}
 }

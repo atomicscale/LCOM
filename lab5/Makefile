@@ -3,12 +3,12 @@ COMPILER_TYPE= gnu
 CC=gcc
 
 PROG=	lab5
-SRCS=	 test5.c vbe.c video_gr.c
+SRCS=	 lab5.c test5.c vbe.c video_gr.c
 
 CCFLAGS= -Wall
 
 DPADD+=	${LIBDRIVER} ${LIBSYS}
-LDADD+= -ldriver -lsys
+LDADD+= -ldriver -lsys -llm
 
 LDFLAGS+= -L .
 

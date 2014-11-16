@@ -31,15 +31,13 @@ static void print_usage(char *argv[]) {
 			"\t service run %s -args \"test_xpm <xi> <yi> <*xpm[]>\" \n "
 			"\t service run %s -args \"test_move <xi> <yi> <*xpm[]> <hor> <delta> <time>\" \n "
 			"\t service run %s -args \"test_controller <>\" \n ", argv[0],
-			argv[0], argv[0], argv[0], argv[0], argv[0], argv[0], argv[0], argv[0],
-			argv[0], argv[0], argv[0], argv[0], argv[0], argv[0], argv[0], argv[0],
-			argv[0], argv[0], argv[0]);
+			argv[0], argv[0], argv[0], argv[0], argv[0]);
 
 }
 
 static int proc_args(int argc, char *argv[]) {
 
-	unsigned short mode, delay, igle_time, tolerance;
+	unsigned short mode, delay, xi,yi,xf,yf, size,color;
 	short length;
 	char *str;
 	long num;
@@ -48,10 +46,10 @@ static int proc_args(int argc, char *argv[]) {
 	// Test_init
 	if (strncmp(argv[1], "test_init", strlen("test_init")) == 0) {
 		if (argc != 4) {
-			printf("video_graphics:: wrong no of arguments for test of test_init() \n");
+			printf("video_graphics:: wrong no of arguments for test_init() \n");
 			return 1;
 		}
-		if ((mode = parse_ulong(argv[2], 10)) == ULONG_MAX)
+		if ((mode = parse_ulong(argv[2], 16)) == ULONG_MAX)
 			return 1;
 		if ((delay = parse_ulong(argv[3], 10)) == ULONG_MAX)
 			return 1;
@@ -60,44 +58,60 @@ static int proc_args(int argc, char *argv[]) {
 		return 0;
 	}
 
-	// Test_async
-	else if (strncmp(argv[1], "test_async", strlen("test_async")) == 0) {
-		if (argc != 3) {
-			printf("mouse:: wrong no of arguments for test of test_async() \n");
+	// Test_square
+	else if (strncmp(argv[1], "test_square", strlen("test_square")) == 0) {
+		if (argc != 6) {
+			printf("video_graphics:: wrong no of arguments for test_square() \n");
 			return 1;
 		}
-		if ((igle_time = parse_ulong(argv[2], 10)) == ULONG_MAX)
+		if ((xi = parse_ulong(argv[2], 10)) == ULONG_MAX)
 			return 1;
-		printf("mouse:: test_async(%d)\n", igle_time);
-		test_async(igle_time);
+		if ((yi = parse_ulong(argv[3], 10)) == ULONG_MAX)
+					return 1;
+		if ((size = parse_ulong(argv[4], 10)) == ULONG_MAX)
+					return 1;
+		if ((color = parse_ulong(argv[5], 16)) == ULONG_MAX)
+					return 1;
+		printf("video_graphics:: test_square(%d,%d,%d,%d)\n", xi, yi, size, color);
+		test_square(xi,yi,size,color);
 		return 0;
 	}
-	// Test_config
-	else if (strncmp(argv[1], "test_config", strlen("test_config")) == 0) {
-		if (argc != 2) {
+	// Test_line
+	else if (strncmp(argv[1], "test_line", strlen("test_line")) == 0) {
+		if (argc != 7) {
 			printf(
-					"mouse:: wrong no of arguments for test of test_config() \n");
+					"video_graphics:: wrong no of arguments for test_line() \n");
 			return 1;
 		}
-		printf("mouse:: test_config() \n");
-		test_config();
+		if ((xi = parse_ulong(argv[2], 10)) == ULONG_MAX)
+			return 1;
+		if ((yi = parse_ulong(argv[3], 10)) == ULONG_MAX)
+					return 1;
+		if ((xf = parse_ulong(argv[4], 10)) == ULONG_MAX)
+					return 1;
+		if ((yf = parse_ulong(argv[5], 10)) == ULONG_MAX)
+					return 1;
+		if ((color = parse_ulong(argv[6], 10)) == ULONG_MAX)
+					return 1;
+		printf("video_graphics:: test_square(%d,%d,%d,%d)\n", xi, yi, xf, yf, color);
+		test_line(xi,yi,xf,yf,color);
 		return 0;
 	}
-	// Test_gesture
-	else if (strncmp(argv[1], "test_gesture", strlen("test_gesture")) == 0) {
+	// Test_xpm
+	if (strncmp(argv[1], "test_xpm", strlen("test_xpm")) == 0) {
 		if (argc != 4) {
-			printf("mouse:: wrong no of arguments for test of test_gesture() \n");
+			printf("video_graphics:: wrong no of arguments for test of test_gesture() \n");
 			return 1;
 		}
-		if ((length = parse_long(argv[2], 10)) == ULONG_MAX)
+		if ((xi = parse_long(argv[2], 10)) == ULONG_MAX)
 			return 1;
-		if ((tolerance = parse_ulong(argv[3],10)) == ULONG_MAX)
+		if ((yi = parse_ulong(argv[3],10)) == ULONG_MAX)
 			return 1;
-		printf("mouse:: test_gesture(%d, %d) \n", length, tolerance);
-		test_gesture(length, tolerance);
+		printf("video_graphics::test_xpm(%d, %d) \n", xi,yi);
+		//test_xpm());
 		return 0;
 	} else {
-		printf("mouse:: non valid function \"%s\" to test\n", argv[1]);
+		printf("video_graphics:: non valid function \"%s\" to test\n", argv[1]);
 		return 1;
 	}
 }
@@ -114,7 +128,7 @@ static unsigned long parse_ulong(char *str, int base) {
 	}
 
 	if (endptr == str) {
-		printf("lab4: parse_ulong: no digits were found in %s \n", str);
+		printf("lab5: parse_ulong: no digits were found in %s \n", str);
 		return ULONG_MAX;
 	}
 
@@ -135,7 +149,7 @@ static long parse_long(char *str, int base) {
 	}
 
 	if (endptr == str) {
-		printf("lab4: parse_long: no digits were found in %s \n", str);
+		printf("lab5: parse_long: no digits were found in %s \n", str);
 		return LONG_MAX;
 	}
 

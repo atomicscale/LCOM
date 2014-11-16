@@ -1,6 +1,8 @@
 #ifndef __TEST5_H
 #define __TEST5_H
 
+#define H_RES             1024
+#define V_RES		  	768
 /** @defgroup video_gr video_gr
  * @{
  *
