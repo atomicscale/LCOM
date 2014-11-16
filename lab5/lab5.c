@@ -1,7 +1,7 @@
 // Código do lab passado, necessário alterar, tal como no makefile
 
 #include <minix/drivers.h>
-#include "test5.h"
+#include "video_gr.h"
 
 static int proc_args(int argc, char *argv[]);
 static unsigned long parse_ulong(char *str, int base);
@@ -25,32 +25,38 @@ int main(int argc, char** argv) {
 
 static void print_usage(char *argv[]) {
 	printf("Usage: one of the following:\n"
-			"\t service run %s -args \"test_packet <cnt>\" \n "
-			"\t service run %s -args \"test_async <idle_time>\" \n "
-			"\t service run %s -args \"test_config <>\" \n "
-			"\t service run %s -args \"test_gesture <length> <tolerance>\" \n ", argv[0],
+			"\t service run %s -args \"test_init <mode> <delay>\" \n "
+			"\t service run %s -args \"test_square <x> <y> <size> <color>\" \n "
+			"\t service run %s -args \"test_line <xi> <yi> <xf> <yf> <color>\" \n "
+			"\t service run %s -args \"test_xpm <xi> <yi> <*xpm[]>\" \n "
+			"\t service run %s -args \"test_move <xi> <yi> <*xpm[]> <hor> <delta> <time>\" \n "
+			"\t service run %s -args \"test_controller <>\" \n ", argv[0],
+			argv[0], argv[0], argv[0], argv[0], argv[0], argv[0], argv[0], argv[0],
+			argv[0], argv[0], argv[0], argv[0], argv[0], argv[0], argv[0], argv[0],
 			argv[0], argv[0], argv[0]);
 
 }
 
 static int proc_args(int argc, char *argv[]) {
 
-	unsigned short cnt, igle_time, tolerance;
+	unsigned short mode, delay, igle_time, tolerance;
 	short length;
 	char *str;
 	long num;
 
 	/* check the function to test: if the first characters match, accept it */
-	// Teste_packet
-	if (strncmp(argv[1], "test_packet", strlen("test_packet")) == 0) {
-		if (argc != 3) {
-			printf("mouse:: wrong no of arguments for test of test_packet() \n");
+	// Test_init
+	if (strncmp(argv[1], "test_init", strlen("test_init")) == 0) {
+		if (argc != 4) {
+			printf("video_graphics:: wrong no of arguments for test of test_init() \n");
 			return 1;
 		}
-		if ((cnt = parse_ulong(argv[2], 10)) == ULONG_MAX)
+		if ((mode = parse_ulong(argv[2], 10)) == ULONG_MAX)
 			return 1;
-		printf("mouse:: test_packet(%d)\n", cnt);
-		test_packet(cnt);
+		if ((delay = parse_ulong(argv[3], 10)) == ULONG_MAX)
+			return 1;
+		printf("video_graphics:: test_init(%d, %d)\n", mode, delay);
+		test_init(mode, delay);
 		return 0;
 	}
 
