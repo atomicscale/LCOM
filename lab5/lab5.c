@@ -93,7 +93,7 @@ static int proc_args(int argc, char *argv[]) {
 					return 1;
 		if ((color = parse_ulong(argv[6], 10)) == ULONG_MAX)
 					return 1;
-		printf("video_graphics:: test_square(%d,%d,%d,%d)\n", xi, yi, xf, yf, color);
+		printf("video_graphics:: test_line(%d,%d,%d,%d)\n", xi, yi, xf, yf, color);
 		test_line(xi,yi,xf,yf,color);
 		return 0;
 	}

@@ -96,9 +96,10 @@ int vg_exit() {
       return 0;
 }
 
-void draw_pixel(int x, int y, char color) {
+void draw_pixel(unsigned int x, unsigned int y, char color) {
 	if (x < H_RES && y < V_RES) {
 		*(video_mem + (y << 10) + x) = color;
+
 	}
 	else if (x < 0 || y < 0)
 		printf("Wrong values for x or y");
