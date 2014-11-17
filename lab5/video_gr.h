@@ -1,6 +1,40 @@
 #ifndef __VIDEO_GR_H
 #define __VIDEO_GR_H
 
+
+/* Constants for VBE 0x105 mode */
+
+/* The physical address may vary from VM to VM.
+ * At one time it was 0xD0000000
+ *  #define VRAM_PHYS_ADDR    0xD0000000
+ * Currently on lab B107 is 0xF0000000
+ * Better run my version of lab5 as follows:
+ *     service run `pwd`/lab5 -args "mode 0x105"
+ */
+#define VRAM_PHYS_ADDR	0xF0000000
+#define H_RES             1024
+#define V_RES		  768
+#define BITS_PER_PIXEL	  8
+
+
+#define GRAPHIC_MODE 0x105
+#define BIOS_VIDEO 0x10
+#define VBE 0x4F
+#define VIDEO 0x00
+#define SET_VBE 0x02
+#define SET_TEXT 0x03
+#define LINEAR_BIT 14
+
+/* Private global variables */
+
+static char *video_mem;		/* Process address to which VRAM is mapped */
+
+static unsigned h_res;		/* Horizontal screen resolution in pixels */
+static unsigned v_res;		/* Vertical screen resolution in pixels */
+static unsigned bits_per_pixel; /* Number of VRAM bits per pixel */
+
+
+
 #define SWAP(X,Y) { \
        int temp = X ; \
        X = Y ; \
