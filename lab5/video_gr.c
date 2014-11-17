@@ -5,6 +5,7 @@
 #include <sys/types.h>
 
 #include "vbe.h"
+#include "video_gr.h"
 
 /* Constants for VBE 0x105 mode */
 
@@ -111,15 +112,11 @@ int draw_rectangle(unsigned short xi, unsigned short yi, unsigned short xf,
 	}
 
 	if (xf < xi) {
-		int temp = xi;
-		xi = xf;
-		xf = temp;
+		SWAP(xi, xf);
 	}
 
 	if(yf < yi){
-		int temp = yi;
-		yi = yf;
-		yf = temp;
+		SWAP(yi, yf);
 	}
 
 unsigned short x, y;

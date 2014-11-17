@@ -1,6 +1,12 @@
 #ifndef __VIDEO_GR_H
 #define __VIDEO_GR_H
 
+#define SWAP(X,Y) { \
+       int temp = X ; \
+       X = Y ; \
+       Y = temp ; \
+    }
+
 /** @defgroup video_gr video_gr
  * @{
  *
@@ -27,8 +33,6 @@ void *vg_init(unsigned short mode);
  */
 int vg_exit(void);
 
-int draw_rectangle(unsigned short xi, unsigned short xf, unsigned short yi,
-		unsigned short yf, unsigned long color);
  /** @} end of video_gr */
  
 #endif /* __VIDEO_GR_H */
