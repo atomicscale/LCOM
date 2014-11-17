@@ -95,21 +95,18 @@ int vg_exit() {
       return 0;
 }
 
-__inline void draw_pixel(int x, int y, char color) {
+void draw_pixel(int x, int y, char color) {
 	if (x < H_RES && y < V_RES) {
 		*(video_mem + (y << 10) + x) = color;
 	}
+	else if (x < 0 || y < 0)
+		printf("Wrong values for x or y");
 }
 
 int draw_rectangle(unsigned short xi, unsigned short yi, unsigned short xf,
 		unsigned short yf, char color) {
-	int x, y;
 
-	if (xi > H_RES || xf > H_RES) {
-		return 1;
-	}
-
-	if (yi > V_RES || yf > V_RES) {
+	if (xi > H_RES || xf > H_RES || yi > V_RES || yf > V_RES) {
 		return 1;
 	}
 
@@ -125,8 +122,10 @@ int draw_rectangle(unsigned short xi, unsigned short yi, unsigned short xf,
 		yf = temp;
 	}
 
-	for (y = yi; y < yf; y++) {
-		for (x = xi; x < xf; x++) {
+unsigned short x, y;
+
+	for (x = xi; x < xf; x++) {
+		for (y = yi; y < yf; y++) {
 			draw_pixel(x, y, color);
 		}
 	}
