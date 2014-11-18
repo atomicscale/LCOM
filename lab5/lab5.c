@@ -2,6 +2,7 @@
 
 #include <minix/drivers.h>
 #include "video_gr.h"
+#include "pixmap.h"
 
 static int proc_args(int argc, char *argv[]);
 static unsigned long parse_ulong(char *str, int base);
@@ -39,7 +40,7 @@ static int proc_args(int argc, char *argv[]) {
 
 	unsigned short mode, delay, xi,yi,xf,yf, size,color;
 	short length;
-	char *str;
+	char *xpm;
 	long num;
 
 	/* check the function to test: if the first characters match, accept it */
@@ -70,7 +71,7 @@ static int proc_args(int argc, char *argv[]) {
 					return 1;
 		if ((size = parse_ulong(argv[4], 10)) == ULONG_MAX)
 					return 1;
-		if ((color = parse_ulong(argv[5], 16)) == ULONG_MAX)
+		if ((color = parse_ulong(argv[5], 10)) == ULONG_MAX)
 					return 1;
 		printf("video_graphics:: test_square(%d,%d,%d,%d)\n", xi, yi, size, color);
 		test_square(xi,yi,size,color);
@@ -99,16 +100,33 @@ static int proc_args(int argc, char *argv[]) {
 	}
 	// Test_xpm
 	if (strncmp(argv[1], "test_xpm", strlen("test_xpm")) == 0) {
-		if (argc != 4) {
-			printf("video_graphics:: wrong no of arguments for test of test_gesture() \n");
+		if (argc != 5) {
+			printf("video_graphics:: wrong no of arguments for test of test_xpm() \n");
 			return 1;
 		}
 		if ((xi = parse_long(argv[2], 10)) == ULONG_MAX)
 			return 1;
 		if ((yi = parse_ulong(argv[3],10)) == ULONG_MAX)
 			return 1;
-		printf("video_graphics::test_xpm(%d, %d) \n", xi,yi);
-		//test_xpm());
+		xpm = argv[4];
+		char **xpm_array;
+		if (strncmp(xpm, "pic1", strlen("pic1")) == 0)
+			xpm_array = pic1;
+		else if (strncmp(xpm, "pic2", strlen("pic2")) == 0)
+			xpm_array = pic2;
+		else if (strncmp(xpm, "pic3", strlen("pic3")) == 0)
+			xpm_array = pic3;
+		else if (strncmp(xpm, "cross", strlen("cross")) == 0)
+			xpm_array = cross;
+		else if (strncmp(xpm, "penguin", strlen("penguin")) == 0)
+			xpm_array = penguin;
+		else
+		{
+			printf("ERROR!!!\n");
+			return 1;
+		}
+		printf("video_graphics::test_xpm(%d, %d, %s) \n", xi,yi,xpm);
+		test_xpm(xi, yi, xpm_array);
 		return 0;
 	} else {
 		printf("video_graphics:: non valid function \"%s\" to test\n", argv[1]);
