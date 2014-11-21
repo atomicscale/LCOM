@@ -19,31 +19,47 @@ void* vg_init(unsigned short mode) {
 	reg86.u.b.al = SET_VBE;
 	reg86.u.w.bx = BIT(LINEAR_BIT) | mode;
 
-	if (sys_int86(&reg86) != OK) {
+	if (sys_int86(&reg86)) {
 		printf("vg_init()::bios call didn't return 0\n");
 		return NULL;
 	}
 
-	h_res = H_RES;
-	v_res = V_RES;
-	bits_per_pixel = BITS_PER_PIXEL;
+	if (vbe_get_mode_info(mode, &vmi_p) == -1) {
+		printf("vg_init()::failed in vbe_get_mode_info");
+		return NULL;
+	}
+
+	h_res = vmi_p.XResolution;
+	v_res = vmi_p.YResolution;
+	bits_per_pixel = vmi_p.BitsPerPixel;
+	if (bits_per_pixel / 8 > 0)
+		bytes_per_pixel = bits_per_pixel / 8;
+	else
+		bytes_per_pixel = 1;
+	vram_size = h_res * v_res * bytes_per_pixel;
 
 	int r;
 
 	/* Allow memory mapping */
 
-	mr.mr_base = (phys_bytes) VRAM_PHYS_ADDR;
-	mr.mr_limit = mr.mr_base + (h_res * v_res);
+	mr.mr_base = vmi_p.PhysBasePtr;
+	mr.mr_limit = mr.mr_base + vram_size;
 
-	if (sys_privctl(SELF, SYS_PRIV_ADD_MEM, &mr) != 0)
+	if (sys_privctl(SELF, SYS_PRIV_ADD_MEM, &mr) != 0) {
 		panic("video_txt: sys_privctl (ADD_MEM) failed: %d\n", r);
+		return NULL;
+	}
 
 	/* Map memory */
 
-	video_mem = vm_map_phys(SELF, (void *) mr.mr_base, h_res * v_res);
+	video_mem = vm_map_phys(SELF, (void *) mr.mr_base, vram_size);
 
-	if (video_mem == MAP_FAILED)
+	if (video_mem == MAP_FAILED) {
 		panic("video_txt couldn't map video memory");
+		return NULL;
+	}
+
+	return video_mem;
 
 }
 
@@ -91,5 +107,21 @@ int draw_rectangle(unsigned short xi, unsigned short yi, unsigned short xf,
 		for (y = yi; y < yf; y++) {
 			draw_pixel(x, y, color);
 		}
+	}
+}
+int draw_xpm(unsigned short xi, unsigned short yi, char *xpm[]) {
+	int x = 1, y = 1;
+	int width, height;
+	char *map;
+	map = read_xpm(xpm, &width, &height);
+	// get the pix map from the XPM
+	while (x <= width && y <= height) {
+		draw_pixel(x + xi, y + yi, *map);
+		if (x == width) {
+			x = 0;
+			y++;
+		}
+		x++;
+		map++;
 	}
 }

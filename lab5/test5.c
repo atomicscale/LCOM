@@ -8,8 +8,8 @@
 void *test_init(unsigned short mode, unsigned short delay) {
 	vg_init(mode);
 	wait_seconds(delay);
-	if (vg_exit())
-		printf("Virtual address VRAM was mapped to: %u", *video_mem);
+	if (!vg_exit())
+		printf("Virtual address VRAM was mapped to: 0x%p", video_mem);
 	else
 		printf("Virtual address VRAM was mapped to: NULL");
 }
@@ -65,21 +65,7 @@ int test_xpm(unsigned short xi, unsigned short yi, char *xpm[]) {
 		return 1;
 	}
 	vg_init(GRAPHIC_MODE);
-	int x = 1, y = 1;
-	int width, height;
-	char *map;
-	map = read_xpm(xpm, &width, &height);
-	// get the pix map from the XPM
-	while (x <= width && y <= height) {
-		draw_pixel(x+xi, y+yi, *map);
-		if (x == width){
-			x = 0;
-			y++;
-		}
-		x++;
-		map++;
-	}
-
+	draw_xpm(xi, yi, xpm);
 	kbd_wait_key(KEY_ESC);
 	vg_exit();
 	return 0;
