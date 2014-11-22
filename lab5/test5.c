@@ -4,6 +4,7 @@
 #include "timer.h"
 #include "read_xpm.c"
 #include "pixmap.h"
+#include "sprite.h"
 
 void *test_init(unsigned short mode, unsigned short delay) {
 	vg_init(mode);
@@ -65,7 +66,10 @@ int test_xpm(unsigned short xi, unsigned short yi, char *xpm[]) {
 		return 1;
 	}
 	vg_init(GRAPHIC_MODE);
-	draw_xpm(xi, yi, xpm);
+	Sprite *sp = create_sprite(xpm);
+	sp->x = xi;
+	sp->y = yi;
+	draw_sprite(sp);
 	kbd_wait_key(KEY_ESC);
 	vg_exit();
 	return 0;
@@ -74,8 +78,24 @@ int test_xpm(unsigned short xi, unsigned short yi, char *xpm[]) {
 
 int test_move(unsigned short xi, unsigned short yi, char *xpm[],
 		unsigned short hor, short delta, unsigned short time) {
-
-	/* To be completed */
+	int i = 0;
+	vg_init(GRAPHIC_MODE);
+	Sprite *sp = create_sprite(xpm);
+	sp->x = xi;
+	sp->y = yi;
+	draw_sprite(sp);
+	i = xi;
+	if (hor == 0) {
+		while(sp->x < 500)
+		{
+			sp->x++;
+			sleep(1);
+			draw_sprite(sp);
+		}
+	}
+	kbd_wait_key(KEY_ESC);
+	vg_exit();
+	return 0;
 
 }
 
