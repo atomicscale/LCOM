@@ -84,13 +84,19 @@ int test_move(unsigned short xi, unsigned short yi, char *xpm[],
 	sp->x = xi;
 	sp->y = yi;
 	draw_sprite(sp);
-	i = xi;
 	if (hor == 0) {
-		while(sp->x < 500)
-		{
+		while (sp->x < xi + delta) {
+			clean_xpm(sp->x, sp->y, sp->width, sp->height);
 			sp->x++;
-			sleep(1);
 			draw_sprite(sp);
+			usleep(time);
+		}
+	} else {
+		while (sp->y < yi + delta) {
+			clean_xpm(sp->x, sp->y, sp->width, sp->height);
+			sp->y++;
+			draw_sprite(sp);
+			usleep(time);
 		}
 	}
 	kbd_wait_key(KEY_ESC);

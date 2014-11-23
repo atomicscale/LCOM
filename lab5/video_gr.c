@@ -126,11 +126,8 @@ int draw_xpm(unsigned short xi, unsigned short yi, char *xpm[]) {
 	}
 }
 
-int clean_xpm(unsigned short xi, unsigned short yi, char *xpm[]) {
+int clean_xpm(unsigned short xi, unsigned short yi, int width, int height) {
 	int x = 1, y = 1;
-	int width, height;
-	char *map;
-	map = read_xpm(xpm, &width, &height);
 	// get the pix map from the XPM
 	while (x <= width && y <= height) {
 		draw_pixel(x + xi, y + yi, 0);
@@ -139,6 +136,5 @@ int clean_xpm(unsigned short xi, unsigned short yi, char *xpm[]) {
 			y++;
 		}
 		x++;
-		map++;
 	}
 }
