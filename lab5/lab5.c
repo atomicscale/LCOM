@@ -1,5 +1,3 @@
-// Código do lab passado, necessário alterar, tal como no makefile
-
 #include <minix/drivers.h>
 #include "video_gr.h"
 #include "pixmap.h"
@@ -165,9 +163,20 @@ static int proc_args(int argc, char *argv[]) {
 			printf("ERROR!!!\n");
 			return 1;
 		}
-		printf("video_graphics::test_xpm(%d, %d, %s) \n", xi, yi, xpm);
 		test_move(xi, yi, xpm_array, hor, delta, time);
 		return 0;
+	}
+	//test_controller
+	if (strncmp(argv[1], "test_controller", strlen("test_controller")) == 0) {
+		if (argc != 2) {
+			printf(
+					"video_graphics:: wrong no of arguments for test of test_controller() \n");
+			return 1;
+		}
+		printf("video_graphics::test_controller() \n");
+		test_controller();
+		return 0;
+
 	} else {
 		printf("video_graphics:: non valid function \"%s\" to test\n", argv[1]);
 		return 1;

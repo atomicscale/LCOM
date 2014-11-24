@@ -5,8 +5,33 @@
 #include "read_xpm.c"
 #include "pixmap.h"
 #include "sprite.h"
+#include "vbe.h"
+#include "lmlib.h"
+#include <stdint.h>
+#include <machine/int86.h>
 
 #define CEILING(x,y) (((x) + (y) - 1) / (y))
+#define TEMINATE 0xFFFF
+#define PB2BASE(x) (((x) >> 4) & 0x0F000)
+#define PB2OFF(x) ((x) & 0x0FFFF)
+
+typedef struct
+{ char VESASignature[4];
+  short VESAVersion;
+  char *OemStringPtr;
+  uint32_t Capabilities;
+  phys_bytes VideoModePtr;
+  short TotalMemory;
+  //VBE 2.0
+  short OemSoftwareRev;
+  char *OemVendorNamePtr;
+  char *OemProductNamePtr;
+  char *OemProductRevPtr;
+  char reserved[222];
+  char OemData[256];
+}__attribute__((packed)) VBE_VgaInfo;
+
+
 
 void *test_init(unsigned short mode, unsigned short delay) {
 	vg_init(mode);
@@ -147,8 +172,36 @@ int test_move(unsigned short xi, unsigned short yi, char *xpm[],
 }
 
 int test_controller() {
-
-	/* To be completed */
-
+	mmap_t map;
+	int num_video_modes;
+	uint16_t *video_modes;
+	VBE_VgaInfo *vmi_p = lm_alloc((sizeof vmi_p), &map);
+	struct reg86u reg86;
+	reg86.u.b.intno = 0x10;
+	reg86.u.b.ah = 0x4F;
+	reg86.u.b.al = 0x0;
+	reg86.u.w.es = PB2BASE(map.phys);
+	reg86.u.w.di = PB2OFF(map.phys);
+	memcpy(vmi_p->VESASignature, "VBE2", sizeof("VBE2"));
+	*vmi_p = *(VBE_VgaInfo*) map.virtual;
+	if (memcmp(vmi_p->VESASignature, "VESA", sizeof(vmi_p->VESASignature)) != 0) {
+		return 1;
+	}
+	void *farptr = (void *) (((vmi_p->VideoModePtr & 0xffff0000) >> 12)
+			+ PB2OFF(vmi_p->VideoModePtr)
+			+ ((uint32_t) map.virtual & 0xF0000000));
+	lm_free(&map);
+	int16_t *modes = farptr;
+	num_video_modes = 0;
+	size_t i;
+	for (i = 0; *modes != TEMINATE; ++modes)
+		num_video_modes++;
+	if ((video_modes = malloc(num_video_modes * sizeof(uint16_t))) == NULL) {
+		return 1;
+	}
+	for (i = 0, modes = farptr; i < num_video_modes; ++i, ++modes) {
+		video_modes[i] = *modes;
+	}
+	return 0;
 }
 

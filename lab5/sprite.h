@@ -67,9 +67,4 @@ int check_collision(Sprite *sp);
 
 int draw_sprite(Sprite *sp);
 
-
-int set_x(Sprite *sp, int x);
-
-int set_y(Sprite *sp, int y);
-
 #endif

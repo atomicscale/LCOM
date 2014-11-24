@@ -3,6 +3,9 @@
 
 #define H_RES             1024
 #define V_RES		  	768
+
+
+
 /** @defgroup video_gr video_gr
  * @{
  *
@@ -95,6 +98,7 @@ int test_move(unsigned short xi, unsigned short yi, char *xpm[], unsigned short 
  * @return 0 upon success, non-zero upon failure
  */
 int test_controller();
+
 
 
  /** @} end of video_gr */
