@@ -15,6 +15,7 @@
 #define BIOS_VIDEO 0x10
 #define VBE 0x4F
 #define RET_VBE 0x01
+#define RET_INFO 0x00
 
 int vbe_get_mode_info(unsigned short mode, vbe_mode_info_t *vmi_p) {
 	struct reg86u reg86;
@@ -31,5 +32,21 @@ int vbe_get_mode_info(unsigned short mode, vbe_mode_info_t *vmi_p) {
 	*vmi_p = *(vbe_mode_info_t*) map.virtual;
 	lm_free(&map);
 	return reg86.u.w.ax;
+}
+
+int vbe_get_controler_info(phys_bytes address) {
+
+        struct reg86u reg86;
+        reg86.u.b.ah = VBE;
+        reg86.u.b.al = RET_INFO;
+        reg86.u.w.es = PB2BASE(address);
+        reg86.u.w.di = PB2OFF(address);
+        reg86.u.b.intno = BIOS_VIDEO;
+        sys_int86(&reg86);
+        if (reg86.u.b.ah == 0x01 || reg86.u.b.ah == 0x02 || reg86.u.b.ah == 0x03){
+                printf("Function vbe_get_controler_info() failed \n");
+                return 1;
+        }
+        return 0;
 }
 

@@ -74,8 +74,10 @@ int vg_exit() {
 	if (sys_int86(&reg86) != OK) {
 		printf("\tvg_exit(): sys_int86() failed \n");
 		return 1;
-	} else
+	} else {
+		printf("Virtual address VRAM was mapped to: 0x%p", video_mem);
 		return 0;
+	}
 }
 
 void draw_pixel(unsigned int x, unsigned int y, char color) {

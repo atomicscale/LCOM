@@ -12,33 +12,32 @@
 
 #define CEILING(x,y) (((x) + (y) - 1) / (y))
 #define TEMINATE 0xFFFF
-#define PB2BASE(x) (((x) >> 4) & 0x0F000)
-#define PB2OFF(x) ((x) & 0x0FFFF)
 
-typedef struct
-{ char VESASignature[4];
-  short VESAVersion;
-  char *OemStringPtr;
-  uint32_t Capabilities;
-  phys_bytes VideoModePtr;
-  short TotalMemory;
-  //VBE 2.0
-  short OemSoftwareRev;
-  char *OemVendorNamePtr;
-  char *OemProductNamePtr;
-  char *OemProductRevPtr;
-  char reserved[222];
-  char OemData[256];
+// http://minirighi.sourceforge.net/html/group__KLowLevelMemoryManager.html
+#define FP_SEG(fp)   ((fp) >> 16)
+#define FP_OFF(fp)   ((fp) & 0xffff)
+#define FP_TO_LINEAR(seg, off)   (((((uint16_t) (seg)) << 4) + ((uint16_t) (off))))
+
+typedef struct {
+	char VESASignature[4];
+	short VESAVersion;
+	char *OemStringPtr;
+	uint32_t Capabilities;
+	phys_bytes VideoModePtr;
+	short TotalMemory;
+	//VBE 2.0
+	short OemSoftwareRev;
+	char *OemVendorNamePtr;
+	char *OemProductNamePtr;
+	char *OemProductRevPtr;
+	char reserved[222];
+	char OemData[256];
 }__attribute__((packed)) VBE_VgaInfo;
-
-
 
 void *test_init(unsigned short mode, unsigned short delay) {
 	vg_init(mode);
 	wait_seconds(delay);
-	if (!vg_exit())
-		printf("Virtual address VRAM was mapped to: 0x%p", video_mem);
-	else
+	if (vg_exit())
 		printf("Virtual address VRAM was mapped to: NULL");
 }
 
@@ -173,44 +172,18 @@ int test_move(unsigned short xi, unsigned short yi, char *xpm[],
 
 int test_controller() {
 	mmap_t map;
-	int num_video_modes;
-	uint16_t *video_modes;
-	VBE_VgaInfo *vmi_p = lm_alloc((sizeof vmi_p), &map);
-	struct reg86u reg86;
-	reg86.u.b.intno = 0x10;
-	reg86.u.b.ah = 0x4F;
-	reg86.u.b.al = 0x0;
-	reg86.u.w.es = PB2BASE(map.phys);
-	reg86.u.w.di = PB2OFF(map.phys);
-	memcpy(vmi_p->VESASignature, "VBE2", sizeof("VBE2"));
-	sys_int86(&reg86);
-	*vmi_p = *(VBE_VgaInfo*) map.virtual;
-	if (memcmp(vmi_p->VESASignature, "VESA", sizeof(vmi_p->VESASignature)) != 0) {
-		return 1;
+	char *virtual = lm_init();
+	VBE_VgaInfo *vga_info = lm_alloc(sizeof(vga_info), &map);
+	vbe_get_controler_info(map.phys);
+	memcpy(vga_info->VESASignature, "VBE2", sizeof("VBE2"));
+	unsigned short *video_modes =
+			FP_TO_LINEAR(FP_SEG(vga_info->VideoModePtr), FP_OFF(vga_info->VideoModePtr))
+					+ virtual;
+	while (*video_modes != TEMINATE) {
+		printf("0x%X, ", *video_modes);
+		video_modes++;
 	}
-	void *farptr = (void *) (((vmi_p->VideoModePtr & 0xffff0000) >> 12)
-			+ PB2OFF(vmi_p->VideoModePtr)
-			+ ((uint32_t) map.virtual & 0xF0000000));
-
-	int16_t *modes = farptr;
-	num_video_modes = 0;
-	while(*modes != 0xFFFF)
-	{
-		++modes;
-		num_video_modes++;
-	}
-
-	if ((video_modes = malloc(num_video_modes * sizeof(uint16_t))) == NULL) {
-		return 1;
-	}
-	modes = farptr;
-	int i = 0;
-	while( i < num_video_modes) {
-		video_modes[i] = *modes;
-		i++;
-		modes++;
-	}
+	printf("\n\tVRAM SIZE: %d KB\n", 64*vga_info->TotalMemory);
 	lm_free(&map);
 	return 0;
 }
-
