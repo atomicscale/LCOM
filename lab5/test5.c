@@ -173,14 +173,13 @@ int test_move(unsigned short xi, unsigned short yi, char *xpm[],
 int test_controller() {
 	mmap_t map;
 	char *virtual = lm_init();
-	VBE_VgaInfo *vga_info = lm_alloc(sizeof(vga_info), &map);
+	VBE_VgaInfo *vga_info = (VBE_VgaInfo *)lm_alloc(sizeof(vga_info), &map);
 	vbe_get_controler_info(map.phys);
 	memcpy(vga_info->VESASignature, "VBE2", sizeof("VBE2"));
-	unsigned short *video_modes =
-			FP_TO_LINEAR(FP_SEG(vga_info->VideoModePtr), FP_OFF(vga_info->VideoModePtr))
-					+ virtual;
+	unsigned short *video_modes = FP_TO_LINEAR(FP_SEG(vga_info->VideoModePtr), FP_OFF(vga_info->VideoModePtr))
+						+ virtual;
 	while (*video_modes != TEMINATE) {
-		printf("0x%X, ", *video_modes);
+		printf("0x%X\t", *video_modes);
 		video_modes++;
 	}
 	printf("\n\tVRAM SIZE: %d KB\n", 64*vga_info->TotalMemory);
