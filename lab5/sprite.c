@@ -40,7 +40,7 @@ int draw_sprite(Sprite *sp) {
 	int x = 1, y = 1;
 	char *map = sp->map;
 	while (x <= sp->width && y <= sp->height) {
-		draw_pixel(x + sp->x, y + sp->y, *map);
+		draw_pixel(x + (int)sp->x, y + (int)sp->y, *map);
 		if (x == sp->width) {
 			x = 0;
 			y++;

@@ -125,7 +125,7 @@ int test_move(unsigned short xi, unsigned short yi, char *xpm[],
 	sp->y = yi;
 	// inc = delta / (time * 60);
 	//Corrigir este pormenor
-	int inc = CEILING(delta, (time * 60));
+	double inc = (double)delta / (double)(time * 60);
 	draw_sprite(sp);
 	int ipc_status;
 	message msg;
@@ -140,7 +140,7 @@ int test_move(unsigned short xi, unsigned short yi, char *xpm[],
 			switch (_ENDPOINT_P(msg.m_source)) {
 			case HARDWARE:
 				if (msg.NOTIFY_ARG & irq_set_timer) {
-					clean_xpm(sp->x, sp->y, sp->width, sp->height);
+					clean_xpm((int)sp->x, (int)sp->y, sp->width, sp->height);
 					if (sp->x > xi + delta || sp->y > yi + delta)
 						validation = 1;
 					if (hor == 0) {
