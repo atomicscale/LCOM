@@ -9,8 +9,8 @@
 #include "lmlib.h"
 #include <stdint.h>
 #include <machine/int86.h>
+#include <math.h>
 
-#define CEILING(x,y) (((x) + (y) - 1) / (y))
 #define TEMINATE 0xFFFF
 
 // http://minirighi.sourceforge.net/html/group__KLowLevelMemoryManager.html
@@ -123,9 +123,7 @@ int test_move(unsigned short xi, unsigned short yi, char *xpm[],
 	Sprite *sp = create_sprite(xpm);
 	sp->x = xi;
 	sp->y = yi;
-	// inc = delta / (time * 60);
-	//Corrigir este pormenor
-	double inc = (double)delta / (double)(time * 60);
+	double inc = (double) delta / (double) (time * 60);
 	draw_sprite(sp);
 	int ipc_status;
 	message msg;
@@ -140,9 +138,14 @@ int test_move(unsigned short xi, unsigned short yi, char *xpm[],
 			switch (_ENDPOINT_P(msg.m_source)) {
 			case HARDWARE:
 				if (msg.NOTIFY_ARG & irq_set_timer) {
-					clean_xpm((int)sp->x, (int)sp->y, sp->width, sp->height);
-					if (sp->x > xi + delta || sp->y > yi + delta)
-						validation = 1;
+					clean_xpm((int) sp->x, (int) sp->y, sp->width, sp->height);
+					if (delta >= 0) {
+						if (sp->x > xi + delta || sp->y > yi + delta)
+							validation = 1;
+					} else {
+						if (sp->x > xi - delta || sp->y > yi - delta)
+							validation = 1;
+					}
 					if (hor == 0) {
 						sp->x = sp->x + inc;
 					} else {
@@ -173,16 +176,17 @@ int test_move(unsigned short xi, unsigned short yi, char *xpm[],
 int test_controller() {
 	mmap_t map;
 	char *virtual = lm_init();
-	VBE_VgaInfo *vga_info = (VBE_VgaInfo *)lm_alloc(sizeof(vga_info), &map);
+	VBE_VgaInfo *vga_info = (VBE_VgaInfo *) lm_alloc(sizeof(vga_info), &map);
 	vbe_get_controler_info(map.phys);
 	memcpy(vga_info->VESASignature, "VBE2", sizeof("VBE2"));
-	unsigned short *video_modes = FP_TO_LINEAR(FP_SEG(vga_info->VideoModePtr), FP_OFF(vga_info->VideoModePtr))
-						+ virtual;
+	unsigned short *video_modes =
+	FP_TO_LINEAR(FP_SEG(vga_info->VideoModePtr),
+			FP_OFF(vga_info->VideoModePtr)) + virtual;
 	while (*video_modes != TEMINATE) {
 		printf("0x%X\t", *video_modes);
 		video_modes++;
 	}
-	printf("\n\tVRAM SIZE: %d KB\n", 64*vga_info->TotalMemory);
+	printf("\n\tVRAM SIZE: %d KB\n", 64 * vga_info->TotalMemory);
 	lm_free(&map);
 	return 0;
 }
