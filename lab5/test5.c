@@ -6,6 +6,8 @@
 #include "pixmap.h"
 #include "sprite.h"
 
+#define CEILING(x,y) (((x) + (y) - 1) / (y))
+
 void *test_init(unsigned short mode, unsigned short delay) {
 	vg_init(mode);
 	wait_seconds(delay);
@@ -78,30 +80,75 @@ int test_xpm(unsigned short xi, unsigned short yi, char *xpm[]) {
 
 int test_move(unsigned short xi, unsigned short yi, char *xpm[],
 		unsigned short hor, short delta, unsigned short time) {
-	int i = 0;
+	if (xi > H_RES || yi > V_RES) {
+		printf("ERROR! xi > H_RES or yi > V_RES\n");
+		return 1;
+	}
+	if (hor == 0) {
+		if (xi + delta > H_RES) {
+			printf("ERROR! xi + delta > H_RES\n");
+			return 1;
+		}
+	} else {
+		if (yi + delta > V_RES) {
+			printf("yi + delta > V_RES\n");
+			return 1;
+		}
+	}
 	vg_init(GRAPHIC_MODE);
 	Sprite *sp = create_sprite(xpm);
 	sp->x = xi;
 	sp->y = yi;
+	// inc = delta / (time * 60);
+	//Corrigir este pormenor
+	int inc = CEILING(delta, (time * 60));
 	draw_sprite(sp);
-	if (hor == 0) {
-		while (sp->x < xi + delta) {
-			clean_xpm(sp->x, sp->y, sp->width, sp->height);
-			sp->x++;
-			draw_sprite(sp);
-			usleep(time);
-		}
-	} else {
-		while (sp->y < yi + delta) {
-			clean_xpm(sp->x, sp->y, sp->width, sp->height);
-			sp->y++;
-			draw_sprite(sp);
-			usleep(time);
+	int ipc_status;
+	message msg;
+	int receive;
+	int validation = 0;
+	unsigned long long scan_code;
+	int irq_set_timer = timer_subscribe_int();
+	int irq_set_kbd = kbd_subscribe();
+	while (!validation) {
+		receive = driver_receive(ANY, &msg, &ipc_status);
+		if (is_ipc_notify(ipc_status)) {
+			switch (_ENDPOINT_P(msg.m_source)) {
+			case HARDWARE:
+				if (msg.NOTIFY_ARG & irq_set_timer) {
+					clean_xpm(sp->x, sp->y, sp->width, sp->height);
+					if (sp->x > xi + delta || sp->y > yi + delta)
+						validation = 1;
+					if (hor == 0) {
+						sp->x = sp->x + inc;
+					} else {
+						sp->y = sp->y + inc;
+					}
+					draw_sprite(sp);
+				}
+				if (msg.NOTIFY_ARG & irq_set_kbd) {
+					scan_code = kbc_read();
+					if (scan_code != -1) {
+						if (scan_code == KEY_UP(KEY_ESC))
+							validation = 1;
+					}
+				}
+				break;
+			default:
+				break;
+			}
 		}
 	}
+	timer_unsubscribe_int();
+	kbd_unsubscribe();
 	kbd_wait_key(KEY_ESC);
 	vg_exit();
 	return 0;
+}
+
+int test_controller() {
+
+	/* To be completed */
 
 }
 
