@@ -183,6 +183,7 @@ int test_controller() {
 	reg86.u.w.es = PB2BASE(map.phys);
 	reg86.u.w.di = PB2OFF(map.phys);
 	memcpy(vmi_p->VESASignature, "VBE2", sizeof("VBE2"));
+	sys_int86(&reg86);
 	*vmi_p = *(VBE_VgaInfo*) map.virtual;
 	if (memcmp(vmi_p->VESASignature, "VESA", sizeof(vmi_p->VESASignature)) != 0) {
 		return 1;
@@ -190,18 +191,26 @@ int test_controller() {
 	void *farptr = (void *) (((vmi_p->VideoModePtr & 0xffff0000) >> 12)
 			+ PB2OFF(vmi_p->VideoModePtr)
 			+ ((uint32_t) map.virtual & 0xF0000000));
-	lm_free(&map);
+
 	int16_t *modes = farptr;
 	num_video_modes = 0;
-	size_t i;
-	for (i = 0; *modes != TEMINATE; ++modes)
+	while(*modes != 0xFFFF)
+	{
+		++modes;
 		num_video_modes++;
+	}
+
 	if ((video_modes = malloc(num_video_modes * sizeof(uint16_t))) == NULL) {
 		return 1;
 	}
-	for (i = 0, modes = farptr; i < num_video_modes; ++i, ++modes) {
+	modes = farptr;
+	int i = 0;
+	while( i < num_video_modes) {
 		video_modes[i] = *modes;
+		i++;
+		modes++;
 	}
+	lm_free(&map);
 	return 0;
 }
 
