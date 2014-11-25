@@ -91,8 +91,15 @@ void draw_pixel(unsigned int x, unsigned int y, char color) {
 int draw_rectangle(unsigned short xi, unsigned short yi, unsigned short xf,
 		unsigned short yf, char color) {
 
-	if (xi > H_RES || xf > H_RES || yi > V_RES || yf > V_RES) {
-		return 1;
+	if (xf > H_RES) {
+		xf = H_RES;
+		xi = H_RES - 10;
+	}
+
+	if (yf > V_RES) {
+		yf = V_RES;
+		yi = V_RES - 10;
+
 	}
 
 	if (xf < xi) {
