@@ -1,9 +1,17 @@
+#include <minix/sysutil.h>
+#include <minix/syslib.h>
 #include <minix/drivers.h>
 #include "mouse-maze.h"
+#include "video_gr.h"
 
 int main(int argc, char** argv) {
 	sef_startup();
-	sys_enable_iop(SELF);
-	test_pointer();
+	vg_init(GRAPHIC_MODE);
+	MouseMaze* maze = (MouseMaze*)startMouseMaze();
+	while(!maze->validation){
+		updateMouseMaze(maze);
+	}
+	stopMouseMaze(maze);
+	vg_exit();
 	return 0;
 }

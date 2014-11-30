@@ -69,5 +69,12 @@ void *vg_init(unsigned short mode);
 int vg_exit(void);
 
  /** @} end of video_gr */
+
+void draw_pixel(unsigned int x, unsigned int y, char color);
+
+int draw_rectangle(unsigned short xi, unsigned short yi, unsigned short xf,
+		unsigned short yf, char color);
+
+char* getGraphicsBuffer();
  
 #endif /* __VIDEO_GR_H */
