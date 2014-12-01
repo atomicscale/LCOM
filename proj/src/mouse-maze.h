@@ -5,12 +5,14 @@
 #define V_RES		  	768
 
 #include "timer.h"
+#include "bitmap.h"
 
 typedef struct {
 	int irq_set_kb;
 	int irq_set_mouse;
 	int irq_set_timer;
 	Timer* timer;
+	Bitmap* test;
 	int validation;
 	unsigned long clean;
 	unsigned long scan_code;

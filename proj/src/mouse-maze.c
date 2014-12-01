@@ -16,6 +16,7 @@ MouseMaze* startMouseMaze() {
 	maze->irq_set_mouse = mouse_subscribe();
 	maze->irq_set_timer = timer_subscribe_int();
 	timer_set_square(0, FPS);
+	maze->test = loadBitmap("/home/lcom/lcom1415-t3g07/proj/rec/images/teste.bmp");
 	maze->validation = 0;
 	maze->scan_code = 0;
 	maze->timer = newTimer();
@@ -30,6 +31,7 @@ void stopMouseMaze(MouseMaze* maze) {
 	deleteMouse();
 	mouse_read(&maze->clean);
 	deleteTimer(maze->timer);
+	deleteBitmap(maze->test);
 	free(maze);
 }
 
@@ -64,16 +66,17 @@ void updateMouseMaze(MouseMaze* maze) {
 	}
 	if (maze->timer->ticked)
 	{
-		//drawMouse();
+		cleanScreen();
+		drawBitmap(maze->test, 0, 0, ALIGN_LEFT);
 		if (maze->timer->counter % 60 < 30)
 		{
-			memset(getGraphicsBuffer(), 0, 1024*768);
-			draw_rectangle(100, 100, 200, 200, 22);
+			draw_rectangle(100, 100, 200, 200, 22, getGraphicsBuffer());
 		}
 		else
 		{
-			memset(getGraphicsBuffer(), 0, 1024*768);
-			draw_rectangle(500, 500, 600, 600, 22);
+			draw_rectangle(200, 200, 300, 300, 22, getGraphicsBuffer());
 		}
+		drawMouse();
+		flipScreen();
 	}
 }

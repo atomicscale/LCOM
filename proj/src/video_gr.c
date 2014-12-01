@@ -9,7 +9,6 @@
 #include "i8042.h"
 
 void* vg_init(unsigned short mode) {
-	unsigned int vram_size;
 	struct mem_range mr;
 	vbe_mode_info_t vmi_p;
 	struct reg86u reg86;
@@ -53,6 +52,7 @@ void* vg_init(unsigned short mode) {
 	/* Map memory */
 
 	video_mem = vm_map_phys(SELF, (void *) mr.mr_base, vram_size);
+	buffer = malloc(vram_size);
 
 	if (video_mem == MAP_FAILED) {
 		panic("video_txt couldn't map video memory");
@@ -79,27 +79,27 @@ int vg_exit() {
 	}
 }
 
-void draw_pixel(unsigned int x, unsigned int y, char color) {
-	if (x < H_RES && y < V_RES) {
-		*(video_mem + (y << 10) + x) = color;
+void draw_pixel(unsigned int x, unsigned int y, char color, char* buf) {
+    int i;
+    char* vptr;
 
-	} else if (x < 0 || y < 0)
-		printf("Wrong values for x or y");
+    if (x > h_res || y > v_res) {
+        return;
+    }
+
+    i = (y * h_res + x) * bytes_per_pixel;
+
+    vptr = &buf[i];
+
+    for (i = 0; i < bytes_per_pixel; i++) {
+        *vptr = (char) color;
+        vptr++;
+        color >>= 8;
+    }
 }
 
 int draw_rectangle(unsigned short xi, unsigned short yi, unsigned short xf,
-		unsigned short yf, char color) {
-
-	if (xf > H_RES) {
-		xf = H_RES;
-		xi = H_RES - 10;
-	}
-
-	if (yf > V_RES) {
-		yf = V_RES;
-		yi = V_RES - 10;
-
-	}
+		unsigned short yf, char color, char* buf) {
 
 	if (xf < xi) {
 		SWAP(xi, xf);
@@ -113,11 +113,29 @@ int draw_rectangle(unsigned short xi, unsigned short yi, unsigned short xf,
 
 	for (x = xi; x < xf; x++) {
 		for (y = yi; y < yf; y++) {
-			draw_pixel(x, y, color);
+			draw_pixel(x, y, color, buf);
 		}
 	}
 }
 
 char* getGraphicsBuffer(){
-	return video_mem;
+	return buffer;
+}
+
+void flipScreen(){
+	memcpy(video_mem, buffer, vram_size);
+}
+
+void cleanScreen(){
+	memset(getGraphicsBuffer(), 0, vram_size);
+}
+
+unsigned getH_res()
+{
+	return h_res;
+}
+
+unsigned getV_res()
+{
+	return v_res;
 }

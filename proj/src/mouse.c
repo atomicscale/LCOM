@@ -10,8 +10,8 @@ void newMouse();
 
 void newMouse() {
 	mouse = (Mouse*) malloc(sizeof(Mouse));
-	mouse->x = 100;
-	mouse->y = 100;
+	mouse->x = 500;
+	mouse->y = 500;
 	mouse->xSign = 0;
 	mouse->ySign = 0;
 	mouse->deltaX = 0;
@@ -49,9 +49,8 @@ void updateMouse() {
 }
 
 void drawMouse() {
-	//memset(getGraphicsBuffer(), 0, 1024*768);
 	draw_rectangle(mouse->x, mouse->y, mouse->x + 10, mouse->y + 10,
-			mouse->color);
+			mouse->color, getGraphicsBuffer());
 }
 
 void deleteMouse() {

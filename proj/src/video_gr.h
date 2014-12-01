@@ -17,7 +17,7 @@
 #define BITS_PER_PIXEL	  8
 
 
-#define GRAPHIC_MODE 0x105
+#define GRAPHIC_MODE 0x114
 #define BIOS_VIDEO 0x10
 #define VBE 0x4F
 #define VIDEO 0x00
@@ -28,12 +28,13 @@
 /* Private global variables */
 
 static char *video_mem;		/* Process address to which VRAM is mapped */
+static char *buffer;
 
 static unsigned h_res;		/* Horizontal screen resolution in pixels */
 static unsigned v_res;		/* Vertical screen resolution in pixels */
 static unsigned bits_per_pixel; /* Number of VRAM bits per pixel */
 static unsigned bytes_per_pixel;
-
+static unsigned int vram_size;
 
 
 #define SWAP(X,Y) { \
@@ -70,11 +71,16 @@ int vg_exit(void);
 
  /** @} end of video_gr */
 
-void draw_pixel(unsigned int x, unsigned int y, char color);
+void draw_pixel(unsigned int x, unsigned int y, char color, char* buf);
 
 int draw_rectangle(unsigned short xi, unsigned short yi, unsigned short xf,
-		unsigned short yf, char color);
+		unsigned short yf, char color, char* buf);
 
 char* getGraphicsBuffer();
+
+void flipScreen();
+
+unsigned getH_res();
+unsigned getV_res();
  
 #endif /* __VIDEO_GR_H */

@@ -7,6 +7,7 @@ bitmap.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/stdio.h
 bitmap.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include/stdarg.h
 bitmap.o:	bitmap.c
 bitmap.o:	bitmap.h
+bitmap.o:	utilities.h
 bitmap.o:	video_gr.h
 
 kbc.o:	/usr/include/limits.h
@@ -96,6 +97,7 @@ keyboard.o:	i8042.h
 keyboard.o:	keyboard.c
 keyboard.o:	keyboard.h
 
+main.o:	/usr/include/assert.h
 main.o:	/usr/include/errno.h
 main.o:	/usr/include/limits.h
 main.o:	/usr/include/machine/bios.h
@@ -145,8 +147,11 @@ main.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/string.h
 main.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/syslimits.h
 main.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/unistd.h
 main.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include/stdarg.h
+main.o:	bitmap.h
 main.o:	main.c
 main.o:	mouse-maze.h
+main.o:	timer.h
+main.o:	utilities.h
 main.o:	video_gr.h
 
 mouse-maze.o:	/usr/include/limits.h
@@ -276,6 +281,15 @@ timer.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include/stdarg.h
 timer.o:	i8254.h
 timer.o:	timer.c
 timer.o:	timer.h
+
+utilities.o:	/usr/include/minix/dir.h
+utilities.o:	/usr/include/minix/types.h
+utilities.o:	/usr/include/sys/null.h
+utilities.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/ansi.h
+utilities.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/stdio.h
+utilities.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include/stdarg.h
+utilities.o:	utilities.c
+utilities.o:	utilities.h
 
 vbe.o:	/usr/include/errno.h
 vbe.o:	/usr/include/limits.h
