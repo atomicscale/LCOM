@@ -44,8 +44,6 @@
 #define Y_OVERFLOW(b) (((b) >> 7) & 1)
 #define X_NEGATIVE(b) (((b) >> 4) & 1)
 #define Y_NEGATIVE(b) (((b) >> 5) & 1)
-#define X_VAL(packet) (short)(packet[1] | (X_NEGATIVE(packet[0]) ? 0xFF : 0) << 8)
-#define Y_VAL(packet) (short)(packet[2] | (Y_NEGATIVE(packet[0]) ? 0xFF : 0) << 8)
 
 //TEST_CONFIG
 #define MODE(b) !(((b) >> 6) & 1)

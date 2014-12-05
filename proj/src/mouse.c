@@ -29,7 +29,7 @@ Mouse* getMouse() {
 }
 
 void updateMouse() {
-	/*mouse->xSign = X_NEGATIVE(mouse->packet[1]);
+	mouse->xSign = X_NEGATIVE(mouse->packet[1]);
 	mouse->ySign = Y_NEGATIVE(mouse->packet[2]);
 	if (mouse->ySign)
 		mouse->deltaY = mouse->packet[2] | 0xFF00;
@@ -38,9 +38,7 @@ void updateMouse() {
 	if (mouse->xSign)
 		mouse->deltaX = mouse->packet[1] | 0xFF00;
 	else
-		mouse->deltaX = mouse->packet[1];*/
-	mouse->deltaX = X_VAL(mouse->packet);
-	mouse->deltaY = Y_VAL(mouse->packet);
+		mouse->deltaX = mouse->packet[1];
 	mouse->x += mouse->deltaX;
 	mouse->y -= mouse->deltaY;
 	mouse->leftButtonDown = LEFT_B(mouse->packet[0]);
@@ -57,55 +55,18 @@ void deleteMouse() {
 	free(mouse);
 }
 
-void print(unsigned long* a) {
-	short p;
-	printf("\tB1=0x%x B2=0x%x B3=0x%x ", a[0], a[1], a[2]);
-	printf("LB=%d ", LEFT_B(a[0]) ? 1 : 0);
-	printf("RB=%d ", RIGHT_B(a[0]) ? 1 : 0);
-	printf("MB=%d ", MIDDLE_B(a[0]) ? 1 : 0);
-	printf("XOV=%d ", X_OVERFLOW(a[0]) ? 1 : 0);
-	printf("YOV=%d ", Y_OVERFLOW(a[0]) ? 1 : 0);
-	if (X_NEGATIVE(a[1])) {
-		p = a[1] | 0xFF00;
-	} else {
-		p = a[1];
-	}
-	printf("X=%d ", p);
-	if (Y_NEGATIVE(a[2])) {
-		p = a[2] | 0xFF00;
-	} else {
-		p = a[2];
-	}
-	printf("Y=%d \n", p);
-}
+void handlerMouse() {
+	unsigned long data;
+	mouse_read(&data);
+	mouse->packet[mouse->counter] = data;
 
-void handlerMouse(){
-	int i;
-	unsigned long data = 0;
-	if (mouse->interrupts == 0) {
-		for (i = 0; i < KBC_IO_MAX_TRIES; i++) {
-			mouse_read(&data);
-			if (data & BIT(3)) {
-				mouse->packet[0] = data;
-				break;
-			}
-		}
-		mouse->counter++;
-		mouse->interrupts = 1;
-	} else {
-		mouse_read(&data);
-		if (mouse->counter == 0 && data & BIT(3) == 0) {
-			mouse->interrupts = 0;
-			return;
-		}
-		mouse->packet[mouse->counter++] = data;
-		if (mouse->counter == 3) {
-			mouse->counter = 0;
-			updateMouse();
-			//print(mouse->packet);
-		}
-	}
-	return;
+	if (mouse->counter == 0 && !(BIT(3) & mouse->packet[0]))
+		return;
+	mouse->counter = (mouse->counter + 1) % 3;
+	mouse->interrupts++;
+	if (mouse->counter != 0)
+		return;
+	updateMouse();
 }
 
 int mouse_write(unsigned char cmd) {
@@ -116,7 +77,6 @@ int mouse_write(unsigned char cmd) {
 		sys_outb(CMD_REG, WRITE_BYTE);
 		tickdelay(micros_to_ticks(DELAY_US));
 		sys_outb(IN_BUF, cmd); /* no args command */
-		tickdelay(micros_to_ticks(DELAY_US));
 		sys_inb(OUT_BUF, &stat); /* assuming it returns OK */
 
 		if (stat == ACK) {
