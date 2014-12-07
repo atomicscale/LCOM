@@ -139,3 +139,8 @@ unsigned getV_res()
 {
 	return v_res;
 }
+
+void drawMaze(){
+	draw_rectangle((0.1*h_res),(0.5*v_res),(0.9*h_res),(0.6*v_res), 252, getGraphicsBuffer());
+	draw_rectangle((0.8*h_res),(0.5*v_res),(0.9*h_res),(0.6*v_res), 120, getGraphicsBuffer());
+}

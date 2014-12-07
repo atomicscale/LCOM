@@ -229,6 +229,9 @@ mouse.o:	mouse.c
 mouse.o:	mouse.h
 mouse.o:	video_gr.h
 
+point.o:	point.c
+point.o:	point.h
+
 timer.o:	/usr/include/errno.h
 timer.o:	/usr/include/limits.h
 timer.o:	/usr/include/machine/bios.h

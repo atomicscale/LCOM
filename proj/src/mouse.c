@@ -128,3 +128,7 @@ int mouse_unsubscribe() {
 	return 0;
 }
 
+void resetMouse(){
+	mouse->x = 0.2 * getH_res();
+	mouse->y = 0.5 * getV_res();
+}

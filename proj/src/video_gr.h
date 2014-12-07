@@ -82,5 +82,6 @@ void flipScreen();
 
 unsigned getH_res();
 unsigned getV_res();
+void drawMaze();
  
 #endif /* __VIDEO_GR_H */
