@@ -5,6 +5,7 @@
 #include "i8042.h"
 #include "bitmap.h"
 #include "mouse-maze.h"
+#include "utilities.h"
 #include <stdint.h>
 #include <machine/int86.h>
 
@@ -64,18 +65,38 @@ void updateMouseMaze(MouseMaze* maze) {
 		if (maze->scan_code == KEY_UP(KEY_ESC))
 			maze->validation = 1;
 	}
-	if (maze->timer->ticked)
-	{
+	if (maze->timer->ticked) {
+
+		//UPDATE
+		Rectangle* mouseRekt = newRectangle(
+				newPoint(getMouse()->x, getMouse()->y),
+				newPoint(getMouse()->x + 10, getMouse()->y + 10));
+		Rectangle* trackRekt = newRectangle(newPoint(0.1 * h_res, 0.5 * v_res),
+				newPoint(0.9 * h_res, 0.6 * v_res));
+		Rectangle* finishRekt = newRectangle(newPoint(0.8 * h_res, 0.5 * v_res),
+				newPoint(0.9 * h_res, 0.6 * v_res));
+
+		setMouseColor(22);
+		LOG_VAR("teste",mouseRekt->p1->x);
+		if (!rectanglesColliding(mouseRekt, trackRekt) || !rectanglesColliding(mouseRekt, finishRekt))
+			LOG_VAR("teste",mouseRekt->p1->x);
+			setMouseColor(250);
+		//resetMouse();
+
+		deleteRectangle(mouseRekt);
+		deleteRectangle(trackRekt);
+		deleteRectangle(finishRekt);
+		//DRAW
 		cleanScreen();
 		//drawBitmap(maze->test, 0, 0, ALIGN_LEFT);
 		/*if (maze->timer->counter % 60 < 30)
-		{
-			draw_rectangle(100, 100, 200, 200, 22, getGraphicsBuffer());
-		}
-		else
-		{
-			draw_rectangle(200, 200, 300, 300, 22, getGraphicsBuffer());
-		}*/
+		 {
+		 draw_rectangle(100, 100, 200, 200, 22, getGraphicsBuffer());
+		 }
+		 else
+		 {
+		 draw_rectangle(200, 200, 300, 300, 22, getGraphicsBuffer());
+		 }*/
 		drawMaze();
 		drawMouse();
 		flipScreen();

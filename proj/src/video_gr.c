@@ -80,22 +80,22 @@ int vg_exit() {
 }
 
 void draw_pixel(unsigned int x, unsigned int y, char color, char* buf) {
-    int i;
-    char* vptr;
+	int i;
+	char* vptr;
 
-    if (x > h_res || y > v_res) {
-        return;
-    }
+	if (x > h_res || y > v_res) {
+		return;
+	}
 
-    i = (y * h_res + x) * bytes_per_pixel;
+	i = (y * h_res + x) * bytes_per_pixel;
 
-    vptr = &buf[i];
+	vptr = &buf[i];
 
-    for (i = 0; i < bytes_per_pixel; i++) {
-        *vptr = (char) color;
-        vptr++;
-        color >>= 8;
-    }
+	for (i = 0; i < bytes_per_pixel; i++) {
+		*vptr = (char) color;
+		vptr++;
+		color >>= 8;
+	}
 }
 
 int draw_rectangle(unsigned short xi, unsigned short yi, unsigned short xf,
@@ -118,29 +118,37 @@ int draw_rectangle(unsigned short xi, unsigned short yi, unsigned short xf,
 	}
 }
 
-char* getGraphicsBuffer(){
+char* getGraphicsBuffer() {
 	return buffer;
 }
 
-void flipScreen(){
+void flipScreen() {
 	memcpy(video_mem, buffer, vram_size);
 }
 
-void cleanScreen(){
+void cleanScreen() {
 	memset(getGraphicsBuffer(), 0, vram_size);
 }
 
-unsigned getH_res()
-{
+unsigned getH_res() {
 	return h_res;
 }
 
-unsigned getV_res()
-{
+unsigned getV_res() {
 	return v_res;
 }
 
-void drawMaze(){
-	draw_rectangle((0.1*h_res),(0.5*v_res),(0.9*h_res),(0.6*v_res), 252, getGraphicsBuffer());
-	draw_rectangle((0.8*h_res),(0.5*v_res),(0.9*h_res),(0.6*v_res), 120, getGraphicsBuffer());
+void drawMaze() {
+	Rectangle* rec1 = newRectangle(newPoint(0.1 * h_res, 0.5 * v_res),
+			newPoint(0.9 * h_res, 0.6 * v_res));
+	Rectangle* finish = newRectangle(newPoint(0.8 * h_res, 0.5 * v_res),
+			newPoint(0.9 * h_res, 0.6 * v_res));
+
+	draw_rectangle2(rec1, 252, getGraphicsBuffer());
+	draw_rectangle2(finish, 120, getGraphicsBuffer());
+}
+
+void draw_rectangle2(Rectangle* rectangle, char color, char* buf) {
+	draw_rectangle(rectangle->p1->x, rectangle->p1->y, rectangle->p2->x,
+			rectangle->p2->y, color, buf);
 }

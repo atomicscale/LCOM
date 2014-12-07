@@ -2,6 +2,9 @@
 #define __VIDEO_GR_H
 
 
+#include "rectangle.h"
+
+
 /* Constants for VBE 0x105 mode */
 
 /* The physical address may vary from VM to VM.
@@ -83,5 +86,6 @@ void flipScreen();
 unsigned getH_res();
 unsigned getV_res();
 void drawMaze();
+void draw_rectangle2(Rectangle* rectangle, char color, char* buf);
  
 #endif /* __VIDEO_GR_H */

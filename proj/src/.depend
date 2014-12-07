@@ -191,7 +191,10 @@ mouse-maze.o:	keyboard.h
 mouse-maze.o:	mouse-maze.c
 mouse-maze.o:	mouse-maze.h
 mouse-maze.o:	mouse.h
+mouse-maze.o:	point.h
+mouse-maze.o:	rectangle.h
 mouse-maze.o:	timer.h
+mouse-maze.o:	utilities.h
 mouse-maze.o:	video_gr.h
 
 mouse.o:	/usr/include/limits.h
@@ -227,10 +230,16 @@ mouse.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include/stdarg.h
 mouse.o:	i8042.h
 mouse.o:	mouse.c
 mouse.o:	mouse.h
+mouse.o:	point.h
+mouse.o:	rectangle.h
 mouse.o:	video_gr.h
 
 point.o:	point.c
 point.o:	point.h
+
+rectangle.o:	point.h
+rectangle.o:	rectangle.c
+rectangle.o:	rectangle.h
 
 timer.o:	/usr/include/errno.h
 timer.o:	/usr/include/limits.h
@@ -400,6 +409,8 @@ video_gr.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/syslimits.h
 video_gr.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/unistd.h
 video_gr.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include/stdarg.h
 video_gr.o:	i8042.h
+video_gr.o:	point.h
+video_gr.o:	rectangle.h
 video_gr.o:	vbe.h
 video_gr.o:	video_gr.c
 video_gr.o:	video_gr.h

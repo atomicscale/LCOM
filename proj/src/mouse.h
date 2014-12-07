@@ -19,13 +19,14 @@ typedef struct {
 
 } Mouse;
 
-
+Mouse* getMouse();
 
 void newMouse();
 void updateMouse();
 void drawMouse();
 void deleteMouse();
 void handlerMouse();
+void setMouseColor(char color);
 
 int mouse_write(unsigned char cmd);
 int mouse_read(unsigned long* val);

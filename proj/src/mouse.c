@@ -1,6 +1,7 @@
 #include "i8042.h"
 #include "mouse.h"
 #include "video_gr.h"
+#include "rectangle.h"
 
 static int hook_id = MOUSE_HOOK_ID;
 
@@ -10,8 +11,8 @@ void newMouse();
 
 void newMouse() {
 	mouse = (Mouse*) malloc(sizeof(Mouse));
-	mouse->x = 500;
-	mouse->y = 500;
+	mouse->x = 0.15 * getH_res();
+	mouse->y = 0.55 * getV_res();
 	mouse->xSign = 0;
 	mouse->ySign = 0;
 	mouse->deltaX = 0;
@@ -25,7 +26,13 @@ void newMouse() {
 }
 
 Mouse* getMouse() {
+	if (!mouse)
+		newMouse();
 	return mouse;
+}
+
+void setMouseColor(char color){
+	mouse->color = color;
 }
 
 void updateMouse() {
@@ -129,6 +136,6 @@ int mouse_unsubscribe() {
 }
 
 void resetMouse(){
-	mouse->x = 0.2 * getH_res();
-	mouse->y = 0.5 * getV_res();
+	mouse->x = 0.15 * getH_res();
+	mouse->y = 0.55 * getV_res();
 }
