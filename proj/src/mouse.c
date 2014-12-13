@@ -22,7 +22,7 @@ void newMouse() {
 	mouse->leftButtonDown = 0;
 	mouse->middleButtonDown = 0;
 	mouse->rightButtonDown = 0;
-	mouse->color = 22;
+	mouse->color = rgb(0, 0, 255);
 }
 
 Mouse* getMouse() {
@@ -31,7 +31,7 @@ Mouse* getMouse() {
 	return mouse;
 }
 
-void setMouseColor(char color){
+void setMouseColor(int color){
 	mouse->color = color;
 }
 
@@ -138,4 +138,22 @@ int mouse_unsubscribe() {
 void resetMouse(){
 	mouse->x = 0.15 * getH_res();
 	mouse->y = 0.55 * getV_res();
+}
+
+int mouse_outH(int aux)
+{
+	if (aux > getH_res())
+		return getH_res();
+	if (aux < getH_res())
+		return 0;
+	return aux;
+}
+
+int mouse_outV(int aux)
+{
+	if (aux > getV_res())
+		return getV_res();
+	if (aux < getV_res())
+		return 0;
+	return aux;
 }

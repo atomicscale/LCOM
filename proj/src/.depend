@@ -7,6 +7,8 @@ bitmap.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/stdio.h
 bitmap.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include/stdarg.h
 bitmap.o:	bitmap.c
 bitmap.o:	bitmap.h
+bitmap.o:	point.h
+bitmap.o:	rectangle.h
 bitmap.o:	utilities.h
 bitmap.o:	video_gr.h
 
@@ -150,6 +152,8 @@ main.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include/stdarg.h
 main.o:	bitmap.h
 main.o:	main.c
 main.o:	mouse-maze.h
+main.o:	point.h
+main.o:	rectangle.h
 main.o:	timer.h
 main.o:	utilities.h
 main.o:	video_gr.h

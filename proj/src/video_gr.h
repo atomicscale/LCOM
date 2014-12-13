@@ -74,10 +74,10 @@ int vg_exit(void);
 
  /** @} end of video_gr */
 
-void draw_pixel(unsigned int x, unsigned int y, char color, char* buf);
+void draw_pixel(unsigned int x, unsigned int y, int color, char* buf);
 
 int draw_rectangle(unsigned short xi, unsigned short yi, unsigned short xf,
-		unsigned short yf, char color, char* buf);
+		unsigned short yf, int color, char* buf);
 
 char* getGraphicsBuffer();
 
@@ -86,6 +86,7 @@ void flipScreen();
 unsigned getH_res();
 unsigned getV_res();
 void drawMaze();
-void draw_rectangle2(Rectangle* rectangle, char color, char* buf);
- 
+void draw_rectangle2(Rectangle* rectangle, int color, char* buf);
+int rgb(unsigned char r, unsigned char g, unsigned char b);
+
 #endif /* __VIDEO_GR_H */

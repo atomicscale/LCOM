@@ -26,7 +26,7 @@ void updateMouse();
 void drawMouse();
 void deleteMouse();
 void handlerMouse();
-void setMouseColor(char color);
+void setMouseColor(int color);
 
 int mouse_write(unsigned char cmd);
 int mouse_read(unsigned long* val);

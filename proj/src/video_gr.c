@@ -79,7 +79,7 @@ int vg_exit() {
 	}
 }
 
-void draw_pixel(unsigned int x, unsigned int y, char color, char* buf) {
+void draw_pixel(unsigned int x, unsigned int y, int color, char* buf) {
 	int i;
 	char* vptr;
 
@@ -99,7 +99,7 @@ void draw_pixel(unsigned int x, unsigned int y, char color, char* buf) {
 }
 
 int draw_rectangle(unsigned short xi, unsigned short yi, unsigned short xf,
-		unsigned short yf, char color, char* buf) {
+		unsigned short yf, int color, char* buf) {
 
 	if (xf < xi) {
 		SWAP(xi, xf);
@@ -144,11 +144,21 @@ void drawMaze() {
 	Rectangle* finish = newRectangle(newPoint(0.8 * h_res, 0.5 * v_res),
 			newPoint(0.9 * h_res, 0.6 * v_res));
 
-	draw_rectangle2(rec1, 252, getGraphicsBuffer());
-	draw_rectangle2(finish, 120, getGraphicsBuffer());
+	draw_rectangle2(rec1, rgb(0, 255, 200), getGraphicsBuffer());
+	draw_rectangle2(finish, rgb(255, 0, 0), getGraphicsBuffer());
 }
 
-void draw_rectangle2(Rectangle* rectangle, char color, char* buf) {
+void draw_rectangle2(Rectangle* rectangle, int color, char* buf) {
 	draw_rectangle(rectangle->p1->x, rectangle->p1->y, rectangle->p2->x,
 			rectangle->p2->y, color, buf);
+}
+
+int rgb(unsigned char r, unsigned char g, unsigned char b){
+	if (r<0 || 255<r || g<0 || 255<g || b<0 || b>255)
+		return -1;
+	int red = r*31/255;
+	int green = g*63/255;
+	int blue = b*31/255;
+
+	return (red<<11) | (green<<5) | blue;
 }
