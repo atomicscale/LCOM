@@ -6,6 +6,7 @@
 
 #include "timer.h"
 #include "bitmap.h"
+#include "labyrinth.h"
 
 typedef struct {
 	int irq_set_kb;
@@ -13,6 +14,7 @@ typedef struct {
 	int irq_set_timer;
 	Timer* timer;
 	Bitmap* test;
+	Labyrinth* lab;
 	int validation;
 	unsigned long clean;
 	unsigned long scan_code;

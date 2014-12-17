@@ -2,6 +2,7 @@
 #include "mouse.h"
 #include "video_gr.h"
 #include "rectangle.h"
+#include "kbc.h"
 
 static int hook_id = MOUSE_HOOK_ID;
 
@@ -23,6 +24,7 @@ void newMouse() {
 	mouse->middleButtonDown = 0;
 	mouse->rightButtonDown = 0;
 	mouse->color = rgb(0, 0, 255);
+	mouse->rect = newRectangle(mouse->x, mouse->y, 10, 10);
 }
 
 Mouse* getMouse() {
@@ -36,14 +38,14 @@ void setMouseColor(int color){
 }
 
 void updateMouse() {
-	mouse->xSign = X_NEGATIVE(mouse->packet[1]);
-	mouse->ySign = Y_NEGATIVE(mouse->packet[2]);
+	mouse->xSign = X_NEGATIVE(mouse->packet[0]);
+	mouse->ySign = Y_NEGATIVE(mouse->packet[0]);
 	if (mouse->ySign)
-		mouse->deltaY = mouse->packet[2] | 0xFF00;
+		mouse->deltaY = (char)mouse->packet[2]; // | 0xFF00;
 	else
 		mouse->deltaY = mouse->packet[2];
 	if (mouse->xSign)
-		mouse->deltaX = mouse->packet[1] | 0xFF00;
+		mouse->deltaX = (char)mouse->packet[1];// | 0xFF00;
 	else
 		mouse->deltaX = mouse->packet[1];
 	mouse->x += mouse->deltaX;
@@ -51,11 +53,11 @@ void updateMouse() {
 	mouse->leftButtonDown = LEFT_B(mouse->packet[0]);
 	mouse->middleButtonDown = MIDDLE_B(mouse->packet[0]);
 	mouse->rightButtonDown = RIGHT_B(mouse->packet[0]);
+	setRecLocation(mouse->rect, mouse->x, mouse->y);
 }
 
 void drawMouse() {
-	draw_rectangle(mouse->x, mouse->y, mouse->x + 10, mouse->y + 10,
-			mouse->color, getGraphicsBuffer());
+	drawRectangle(mouse->rect, mouse->color, getGraphicsBuffer());
 }
 
 void deleteMouse() {
@@ -82,7 +84,7 @@ int mouse_write(unsigned char cmd) {
 
 	for (i = 0; i < KBC_IO_MAX_TRIES; i++) {
 		sys_outb(CMD_REG, WRITE_BYTE);
-		tickdelay(micros_to_ticks(DELAY_US));
+		//tickdelay(micros_to_ticks(DELAY_US));
 		sys_outb(IN_BUF, cmd); /* no args command */
 		sys_inb(OUT_BUF, &stat); /* assuming it returns OK */
 
@@ -90,22 +92,28 @@ int mouse_write(unsigned char cmd) {
 			return 0;
 		}
 	}
+//	        if (kbc_write(CMD_REG, WRITE_BYTE) != 0)
+//	                return 1;
+//	        if (kbc_write(DATA, cmd) != 0)
+//	                return 1;
+//	        return 0;
 }
 
 int mouse_read(unsigned long* val) {
-	unsigned long read = 0;
-	int i = 0;
-	for (i = 0; i < KBC_IO_MAX_TRIES; i++) {
-		sys_inb(STAT_REG, &read);
-		if ((read & OBF) && (read & AUX)) {
-			if (sys_inb(OUT_BUF, val) != 0) {
-				return -1;
-			}
-			return 0;
-		}
-		tickdelay(micros_to_ticks(DELAY_US));
-	}
-	return -1;
+	return sys_inb(DATA, val);
+//	unsigned long read = 0;
+//	int i = 0;
+//	for (i = 0; i < KBC_IO_MAX_TRIES; i++) {
+//		sys_inb(STAT_REG, &read);
+//		if ((read & OBF) && (read & AUX)) {
+//			if (sys_inb(OUT_BUF, val) != 0) {
+//				return -1;
+//			}
+//			return 0;
+//		}
+//		tickdelay(micros_to_ticks(DELAY_US));
+//	}
+//	return -1;
 }
 
 int mouse_subscribe() {

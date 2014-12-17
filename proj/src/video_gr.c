@@ -138,21 +138,6 @@ unsigned getV_res() {
 	return v_res;
 }
 
-void drawMaze() {
-	Rectangle* rec1 = newRectangle(newPoint(0.1 * h_res, 0.5 * v_res),
-			newPoint(0.9 * h_res, 0.6 * v_res));
-	Rectangle* finish = newRectangle(newPoint(0.8 * h_res, 0.5 * v_res),
-			newPoint(0.9 * h_res, 0.6 * v_res));
-
-	draw_rectangle2(rec1, rgb(0, 255, 200), getGraphicsBuffer());
-	draw_rectangle2(finish, rgb(255, 0, 0), getGraphicsBuffer());
-}
-
-void draw_rectangle2(Rectangle* rectangle, int color, char* buf) {
-	draw_rectangle(rectangle->p1->x, rectangle->p1->y, rectangle->p2->x,
-			rectangle->p2->y, color, buf);
-}
-
 int rgb(unsigned char r, unsigned char g, unsigned char b){
 	if (r<0 || 255<r || g<0 || 255<g || b<0 || b>255)
 		return -1;

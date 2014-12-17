@@ -1,5 +1,5 @@
 #pragma once
-
+#include "rectangle.h"
 
 
 typedef struct {
@@ -16,6 +16,8 @@ typedef struct {
     int rightButtonDown;
 
     int color;
+
+    Rectangle* rect;
 
 } Mouse;
 

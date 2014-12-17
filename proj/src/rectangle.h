@@ -3,16 +3,20 @@
 #include "point.h"
 
 typedef struct {
-	Point * p1;
-	Point * p2;
+	int x;
+	int y;
+	int w;
+	int h;
 } Rectangle;
 
-Rectangle* newRectangle(Point * p1, Point * p2);
+Rectangle* newRectangle(int x, int y, int w, int h);
 
 void deleteRectangle(Rectangle * rectangle);
 
-void setRecLocation(Rectangle * rectangle, Point * dest);
+void setRecLocation(Rectangle * rectangle, int x, int y);
 
-void moveRectangle (Rectangle* rectangle, Point * delta);
+void moveRectangle(Rectangle* rectangle, int x, int y);
+
+void drawRectangle(Rectangle* rectangle, int color, char* buf);
 
 int rectanglesColliding(Rectangle* r1, Rectangle* r2);

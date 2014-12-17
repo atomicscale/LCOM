@@ -9,6 +9,7 @@
 #include <stdint.h>
 #include <machine/int86.h>
 
+
 const int FPS = 60;
 
 MouseMaze* startMouseMaze() {
@@ -17,11 +18,12 @@ MouseMaze* startMouseMaze() {
 	maze->irq_set_mouse = mouse_subscribe();
 	maze->irq_set_timer = timer_subscribe_int();
 	timer_set_square(0, FPS);
-	//maze->test = loadBitmap("/home/lcom/lcom1415-t3g07/proj/rec/images/teste.bmp");
+	maze->test = loadBitmap("/home/lcom/lcom1415-t3g07/proj/rec/images/test.bmp");
 	maze->validation = 0;
 	maze->scan_code = 0;
 	maze->timer = newTimer();
 	newMouse();
+	maze->lab = newLabyrinth();
 	return maze;
 }
 
@@ -33,6 +35,7 @@ void stopMouseMaze(MouseMaze* maze) {
 	mouse_read(&maze->clean);
 	deleteTimer(maze->timer);
 	deleteBitmap(maze->test);
+	deleteLabyrinth(maze->lab);
 	free(maze);
 }
 
@@ -66,25 +69,15 @@ void updateMouseMaze(MouseMaze* maze) {
 			maze->validation = 1;
 	}
 	if (maze->timer->ticked) {
-
-		//UPDATE
-		Rectangle* mouseRekt = newRectangle(
-				newPoint(getMouse()->x, getMouse()->y),
-				newPoint(getMouse()->x + 10, getMouse()->y + 10));
-		Rectangle* trackRekt = newRectangle(newPoint(0.1 * h_res, 0.5 * v_res),
-				newPoint(0.9 * h_res, 0.6 * v_res));
-		Rectangle* finishRekt = newRectangle(newPoint(0.8 * h_res, 0.5 * v_res),
-				newPoint(0.9 * h_res, 0.6 * v_res));
-
-		//LOG_VAR("teste",mouseRekt->p1->x);
-		if (rectanglesColliding(mouseRekt, trackRekt) || rectanglesColliding(mouseRekt, finishRekt))
+		LOG_VAR("mousePos: ",getMouse()->rect->x);
+		if (!rectanglesColliding(getMouse()->rect, maze->lab->rec))
 			resetMouse();
-		deleteRectangle(mouseRekt);
-		deleteRectangle(trackRekt);
-		deleteRectangle(finishRekt);
+		if (rectanglesColliding(getMouse()->rect, maze->lab->finish))
+			maze->validation = 1;
 		//DRAW
 		cleanScreen();
-		drawMaze();
+		drawBitmap(maze->test, 0, 0, ALIGN_LEFT);
+		drawLabyrinth(maze->lab);
 		drawMouse();
 		flipScreen();
 	}
