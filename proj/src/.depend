@@ -1,4 +1,29 @@
 
+GameState.o:	GameState.c
+GameState.o:	GameState.h
+GameState.o:	bitmap.h
+GameState.o:	keyboard.h
+GameState.o:	labyrinth.h
+GameState.o:	mouse.h
+GameState.o:	point.h
+GameState.o:	rectangle.h
+
+MainMenuState.o:	/usr/include/minix/dir.h
+MainMenuState.o:	/usr/include/minix/types.h
+MainMenuState.o:	/usr/include/sys/null.h
+MainMenuState.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/ansi.h
+MainMenuState.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/stdio.h
+MainMenuState.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include/stdarg.h
+MainMenuState.o:	MainMenuState.c
+MainMenuState.o:	MainMenuState.h
+MainMenuState.o:	bitmap.h
+MainMenuState.o:	keyboard.h
+MainMenuState.o:	mouse.h
+MainMenuState.o:	point.h
+MainMenuState.o:	rectangle.h
+MainMenuState.o:	utilities.h
+MainMenuState.o:	video_gr.h
+
 bitmap.o:	/usr/include/minix/dir.h
 bitmap.o:	/usr/include/minix/types.h
 bitmap.o:	/usr/include/sys/null.h
@@ -214,6 +239,8 @@ mouse-maze.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/limits.h
 mouse-maze.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/stdio.h
 mouse-maze.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/syslimits.h
 mouse-maze.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include/stdarg.h
+mouse-maze.o:	GameState.h
+mouse-maze.o:	MainMenuState.h
 mouse-maze.o:	bitmap.h
 mouse-maze.o:	i8042.h
 mouse-maze.o:	keyboard.h

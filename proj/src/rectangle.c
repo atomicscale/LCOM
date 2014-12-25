@@ -32,3 +32,7 @@ void drawRectangle(Rectangle* rectangle, int color, char* buf) {
 int rectanglesColliding(Rectangle* r1, Rectangle* r2) {
 	return !(r1->x + r1->w < r2->x || r1->x > r2->x + r2->w || r1->y + r1->h < r2->y  || r1->y > r2->y + r2->h);
 }
+
+int rectangleInside(Rectangle* r1, Rectangle* r2){
+	return (r2->x <= r1->x && r1->x+r1->w <= r2->x+r2->w && r2->y <= r1->y && r1->y+r1->h <= r2->y+r2->h);
+}

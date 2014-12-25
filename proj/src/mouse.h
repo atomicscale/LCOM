@@ -35,3 +35,5 @@ int mouse_read(unsigned long* val);
 
 int mouse_subscribe();
 int mouse_unsubscribe();
+
+int rectangleInside(Rectangle* r1, Rectangle* r2);
