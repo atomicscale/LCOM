@@ -16,13 +16,15 @@ service mouse-maze
                 vfs
                 ;
         io
-                40:4
-                60
-                64
+                40:4	# TIMER0
+                60		# KBC
+                64		# KBC			
+                70:2	# RTC
                 ;               
         irq
                 0         # TIMER 0 IRQ
                 1         # KBD IRQ 
+                8         # RTC
                 12        # AUX/MOUSE IRQ
                 ;       
         uid     0               
