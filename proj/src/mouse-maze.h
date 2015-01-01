@@ -3,16 +3,19 @@
 
 
 #include "timer.h"
+#include "rtc.h"
 
 typedef enum{
-	MAIN_MENU_STATE, GAME_STATE
+	MAIN_MENU_STATE, GAME_STATE, WIN_STATE, LOSE_STATE
 } State;
 
 typedef struct {
 	int irq_set_kb;
 	int irq_set_mouse;
 	int irq_set_timer;
+	int irq_set_rtc;
 	Timer* timer;
+	rtc_time_t rtc;
 	int validation;
 	int draw;
 	unsigned long clean;
@@ -20,6 +23,8 @@ typedef struct {
 	State currentState;
 	void* state;
 } MouseMaze;
+
+void handler_rtc(MouseMaze* maze);
 
 MouseMaze* startMouseMaze();
 void updateMouseMaze(MouseMaze* maze);

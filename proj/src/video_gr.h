@@ -79,6 +79,10 @@ void draw_pixel(unsigned int x, unsigned int y, int color, char* buf);
 int draw_rectangle(unsigned short xi, unsigned short yi, unsigned short xf,
 		unsigned short yf, int color, char* buf);
 
+void draw_circle(int x0, int y0, int radius, int color, char* buf);
+
+void see_circle(int x0, int y0, int radius, int color, char* buf);
+
 char* getGraphicsBuffer();
 
 void flipScreen();

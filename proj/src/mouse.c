@@ -48,8 +48,8 @@ void updateMouse() {
 		mouse->deltaX = (char)mouse->packet[1];// | 0xFF00;
 	else
 		mouse->deltaX = mouse->packet[1];
-	mouse->x += mouse->deltaX;
-	mouse->y -= mouse->deltaY;
+	mouse->x = mouse_outH(mouse->x + mouse->deltaX);
+	mouse->y = mouse_outV(mouse->y - mouse->deltaY);
 	mouse->leftButtonDown = LEFT_B(mouse->packet[0]);
 	mouse->middleButtonDown = MIDDLE_B(mouse->packet[0]);
 	mouse->rightButtonDown = RIGHT_B(mouse->packet[0]);
@@ -61,6 +61,7 @@ void drawMouse() {
 }
 
 void deleteMouse() {
+	deleteRectangle(mouse->rect);
 	free(mouse);
 }
 
@@ -150,18 +151,20 @@ void resetMouse(){
 
 int mouse_outH(int aux)
 {
-	if (aux > getH_res())
+	if (aux >= getH_res())
 		return getH_res();
-	if (aux < getH_res())
+	else if (aux <= 0)
 		return 0;
-	return aux;
+	else
+		return aux;
 }
 
 int mouse_outV(int aux)
 {
-	if (aux > getV_res())
+	if (aux >= getV_res())
 		return getV_res();
-	if (aux < getV_res())
+	else if (aux <= 0)
 		return 0;
-	return aux;
+	else
+		return aux;
 }

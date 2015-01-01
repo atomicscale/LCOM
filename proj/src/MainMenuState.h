@@ -10,6 +10,10 @@ typedef enum {
 typedef struct {
 	int done;
 	Bitmap* background;
+	Bitmap* play;
+	Bitmap* onPlay;
+	Bitmap* exit;
+	Bitmap* onExit;
 	int mouseOnPlay;
 	Rectangle* playButton;
 	int mouseOnExit;

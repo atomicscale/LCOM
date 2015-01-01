@@ -10,22 +10,19 @@ MainMenuState* newMainMenuState() {
 
 	state->done = 0;
 	state->action=0;
-	state->background = loadBitmap(
-			"/home/lcom/lcom1415-t3g07/proj/rec/images/main-menu1.bmp");
+	state->background = loadBitmap("/home/lcom/lcom1415-t3g07/proj/rec/images/main-menu.bmp");
+	state->play = loadBitmap("/home/lcom/lcom1415-t3g07/proj/rec/images/Main/PlayButtonBlue.bmp");
+	state->onPlay = loadBitmap("/home/lcom/lcom1415-t3g07/proj/rec/images/Main/PlayButtonRed.bmp");
+	state->exit = loadBitmap("/home/lcom/lcom1415-t3g07/proj/rec/images/Main/ExitButtonBlue.bmp");
+	state->onExit = loadBitmap("/home/lcom/lcom1415-t3g07/proj/rec/images/Main/ExitButtonRed.bmp");
 
-	// these numbers are just meant to create the buttons boundaries
-	double w = .075, hi = .38, hf = hi + .10;
-	int x1 = getH_res() / 2 - getH_res() * w;
-	int x2 = getH_res() / 2 + getH_res() * w;
-	int y1 = getV_res() * hi;
-	int y2 = getV_res() * hf;
-	state->playButton = newRectangle(x1, y1, x2 - x1, y2 - y1);
+	int x1 = 50;
+	int x2 = 524;
+	int y1 = 400;
+	state->playButton = newRectangle(x1, y1, 224, 82);
 	state->mouseOnPlay = 0;
 
-	hi = .59, hf = hi + .10;
-	y1 = getV_res() * hi;
-	y2 = getV_res() * hf;
-	state->exitButton = newRectangle(x1, y1, x2 - x1, y2 - y1);
+	state->exitButton = newRectangle(x2, y1, 224, 82);
 	state->mouseOnExit = 0;
 
 	return state;
@@ -61,21 +58,31 @@ int updateMainMenuState(MainMenuState* state, unsigned long scancode) {
 		}
 	} else
 		state->mouseOnExit = 0;
-
 	return draw;
 }
 
 void drawMainMenuState(MainMenuState* state) {
 	drawBitmap(state->background, 0, 0, ALIGN_LEFT);
-
-	if (state->mouseOnPlay)
+	if (state->mouseOnPlay){
 		drawRectangle(state->playButton, rgb(255, 0, 0), getGraphicsBuffer());
-	else if (state->mouseOnExit)
+		drawBitmap(state->onPlay, 50, 400, ALIGN_LEFT);
+	}
+	else
+		drawBitmap(state->play, 50, 400, ALIGN_LEFT);
+	if (state->mouseOnExit){
 		drawRectangle(state->exitButton, rgb(255, 0, 0), getGraphicsBuffer());
+		drawBitmap(state->onExit, 524, 400, ALIGN_LEFT);
+	}
+	else
+		drawBitmap(state->exit, 524, 400, ALIGN_LEFT);
 }
 
 void deleteMainMenuState(MainMenuState* state) {
 	deleteBitmap(state->background);
+	deleteBitmap(state->play);
+	deleteBitmap(state->onPlay);
+	deleteBitmap(state->exit);
+	deleteBitmap(state->onExit);
 	deleteRectangle(state->playButton);
 	deleteRectangle(state->exitButton);
 

@@ -1,5 +1,6 @@
 #pragma once
 #include "rectangle.h"
+#include "bitmap.h"
 
 
 typedef struct {
@@ -16,7 +17,7 @@ typedef struct {
     int rightButtonDown;
 
     int color;
-
+    Bitmap* image;
     Rectangle* rect;
 
 } Mouse;

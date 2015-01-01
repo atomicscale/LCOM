@@ -118,6 +118,77 @@ int draw_rectangle(unsigned short xi, unsigned short yi, unsigned short xf,
 	}
 }
 
+// algoritmo http://stackoverflow.com/questions/1201200/fast-algorithm-for-drawing-filled-circles
+void draw_circle(int x0, int y0, int radius, int color, char* buf) {
+	int x = radius;
+	int y = 0;
+	int xChange = 1 - (radius << 1);
+	int yChange = 0;
+	int radiusError = 0;
+	int i;
+	while (x >= y) {
+		for (i = x0 - x; i <= x0 + x; i++) {
+			draw_pixel(i, y0 + y, color, buf);
+			draw_pixel(i, y0 - y, color, buf);
+		}
+		for (i = x0 - y; i <= x0 + y; i++) {
+			draw_pixel(i, y0 + x, color, buf);
+			draw_pixel(i, y0 - x, color, buf);
+		}
+
+		y++;
+		radiusError += yChange;
+		yChange += 2;
+		if (((radiusError << 1) + xChange) > 0) {
+			x--;
+			radiusError += xChange;
+			xChange += 2;
+		}
+	}
+}
+
+void see_circle(int x0, int y0, int radius, int color, char* buf) {
+	int x = radius;
+	int y = 0;
+	int xChange = 1 - (radius << 1);
+	int yChange = 0;
+	int radiusError = 0;
+	int i, j;
+	for (i = 0; i < y0-x; i++)
+		for (j = 0; j < h_res; j++)
+			draw_pixel(j, i, color, buf);
+	for (i = y0+x; i < v_res; i++)
+			for (j = 0; j < h_res; j++)
+				draw_pixel(j, i, color, buf);
+	while (x >= y) {
+		for (i = 0; i <= x0 - x; i++) {
+			draw_pixel(i, y0 + y, color, buf);
+			draw_pixel(i, y0 - y, color, buf);
+		}
+		for (i = x0 + x; i <= getH_res(); i++) {
+			draw_pixel(i, y0 + y, color, buf);
+			draw_pixel(i, y0 - y, color, buf);
+		}
+		for (i = 0; i <= x0 - y; i++) {
+			draw_pixel(i, y0 + x, color, buf);
+			draw_pixel(i, y0 - x, color, buf);
+		}
+		for (i = x0 + y; i <= getH_res(); i++) {
+			draw_pixel(i, y0 + x, color, buf);
+			draw_pixel(i, y0 - x, color, buf);
+		}
+
+		y++;
+		radiusError += yChange;
+		yChange += 2;
+		if (((radiusError << 1) + xChange) > 0) {
+			x--;
+			radiusError += xChange;
+			xChange += 2;
+		}
+	}
+}
+
 char* getGraphicsBuffer() {
 	return buffer;
 }
@@ -138,12 +209,12 @@ unsigned getV_res() {
 	return v_res;
 }
 
-int rgb(unsigned char r, unsigned char g, unsigned char b){
-	if (r<0 || 255<r || g<0 || 255<g || b<0 || b>255)
+int rgb(unsigned char r, unsigned char g, unsigned char b) {
+	if (r < 0 || 255 < r || g < 0 || 255 < g || b < 0 || b > 255)
 		return -1;
-	int red = r*31/255;
-	int green = g*63/255;
-	int blue = b*31/255;
+	int red = r * 31 / 255;
+	int green = g * 63 / 255;
+	int blue = b * 31 / 255;
 
-	return (red<<11) | (green<<5) | blue;
+	return (red << 11) | (green << 5) | blue;
 }

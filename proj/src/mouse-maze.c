@@ -1,6 +1,5 @@
 #include "video_gr.h"
 #include "mouse.h"
-#include "timer.h"
 #include "keyboard.h"
 #include "i8042.h"
 #include "bitmap.h"
@@ -12,8 +11,29 @@
 
 #include "MainMenuState.h"
 #include "GameState.h"
+#include "WinState.h"
+#include "LoseState.h"
 
 const int FPS = 60;
+int m = 0;
+int n = 0;
+
+
+void handler_rtc(MouseMaze* maze){
+	unsigned long ev = rtc_check();
+	if (maze->currentState == GAME_STATE){
+		if (ev & RTC_AF)
+		{
+			((GameState*) (maze->state))->lose = 1;
+			((GameState*) (maze->state))->done = 1;
+		}
+		if (ev & RTC_UF)
+		{
+			((GameState*) (maze->state))->timer--;
+		}
+	}
+}
+
 
 void checkIfStateIsDone(MouseMaze* game);
 void deleteCurrentState(MouseMaze* game);
@@ -23,6 +43,7 @@ MouseMaze* startMouseMaze() {
 	maze->irq_set_kb = kbd_subscribe();
 	maze->irq_set_mouse = mouse_subscribe();
 	maze->irq_set_timer = timer_subscribe_int();
+	maze->irq_set_rtc = rtc_subscribe();
 	timer_set_square(0, FPS);
 	maze->validation = 0;
 	maze->scan_code = 0;
@@ -39,6 +60,7 @@ void stopMouseMaze(MouseMaze* maze) {
 	mouse_unsubscribe();
 	kbd_unsubscribe();
 	timer_unsubscribe_int();
+	rtc_unsubscribe();
 	deleteMouse();
 	mouse_read(&maze->clean);
 	deleteTimer(maze->timer);
@@ -50,9 +72,17 @@ void drawMouseMaze(MouseMaze* maze) {
 	switch (maze->currentState) {
 	case MAIN_MENU_STATE:
 		drawMainMenuState(maze->state);
+		drawMouse();
 		break;
 	case GAME_STATE:
 		drawGameState(maze->state);
+		drawMouse();
+		break;
+	case WIN_STATE:
+		drawWinState(maze->state);
+		break;
+	case LOSE_STATE:
+		drawLoseState(maze->state);
 		break;
 	default:
 		break;
@@ -79,6 +109,9 @@ void updateMouseMaze(MouseMaze* maze) {
 			if (msg.NOTIFY_ARG & maze->irq_set_kb) {
 				maze->scan_code = kbc_read();
 			}
+			if (msg.NOTIFY_ARG & maze->irq_set_rtc) {
+				handler_rtc(maze);
+			}
 			break;
 		default:
 			break;
@@ -92,33 +125,43 @@ void updateMouseMaze(MouseMaze* maze) {
 		case GAME_STATE:
 			updateGameState(maze->state, maze->scan_code);
 			break;
+		case WIN_STATE:
+			updateWinState(maze->state, maze->scan_code);
+			break;
+		case LOSE_STATE:
+			updateLoseState(maze->state, maze->scan_code);
+			break;
 		default:
 			break;
 		}
 		maze->scan_code = 0;
 		maze->draw = 1;
 		drawMouseMaze(maze);
-		drawMouse();
 		flipScreen();
 	}
 	checkIfStateIsDone(maze);
 }
 
 void changeState(MouseMaze* maze, State newState) {
-	// deleting current state
+// deleting current state
 	deleteCurrentState(maze);
 
-	// changing current state
+// changing current state
 	maze->currentState = newState;
 
-	// creating new state
+// creating new state
 	switch (maze->currentState) {
 	case MAIN_MENU_STATE:
 		maze->state = newMainMenuState();
 		break;
 	case GAME_STATE:
-		maze->state = newGameState();
+		maze->state = newGameState(m, n);
 		break;
+	case WIN_STATE:
+		maze->state = newWinState();
+		break;
+	case LOSE_STATE:
+		maze->state = newLoseState();
 	default:
 		break;
 	}
@@ -142,7 +185,21 @@ void checkIfStateIsDone(MouseMaze* maze) {
 		}
 		break;
 	case GAME_STATE:
-		if (((GameState*) (maze->state))->done)
+		if (((GameState*) (maze->state))->done) {
+			if (((GameState*) (maze->state))->win)
+				changeState(maze, WIN_STATE);
+			else if (((GameState*) (maze->state))->lose)
+				changeState(maze, LOSE_STATE);
+			else
+				changeState(maze, MAIN_MENU_STATE);
+		}
+		break;
+	case WIN_STATE:
+		if (((WinState*) (maze->state))->done)
+			changeState(maze, MAIN_MENU_STATE);
+		break;
+	case LOSE_STATE:
+		if (((LoseState*) (maze->state))->done)
 			changeState(maze, MAIN_MENU_STATE);
 	default:
 		break;
@@ -156,6 +213,12 @@ void deleteCurrentState(MouseMaze* maze) {
 		break;
 	case GAME_STATE:
 		deleteGameState(maze->state);
+		break;
+	case WIN_STATE:
+		deleteWinState(maze->state);
+		break;
+	case LOSE_STATE:
+		deleteLoseState(maze->state);
 		break;
 	default:
 		break;
