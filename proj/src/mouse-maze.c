@@ -77,7 +77,8 @@ void drawMouseMaze(MouseMaze* maze) {
 		break;
 	case GAME_STATE:
 		drawGameState(maze->state);
-		drawMouse();
+		if (!m)
+			drawMouse();
 		break;
 	case WIN_STATE:
 		drawWinState(maze->state);
@@ -229,7 +230,7 @@ void checkIfStateIsDone(MouseMaze* maze) {
 			else if (((GameState*) (maze->state))->lose)
 				changeState(maze, LOSE_STATE);
 			else
-				changeState(maze, MAIN_MENU_STATE);
+				changeState(maze, MODE_STATE);
 		}
 		break;
 	case WIN_STATE:

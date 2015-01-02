@@ -13,6 +13,7 @@ typedef struct {
 	int mouse;
 	Labyrinth* lab;
 	Bitmap* background;
+	Rectangle* rect;
 } GameState;
 
 GameState* newGameState(int mouse, int nigth);

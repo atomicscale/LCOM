@@ -40,6 +40,7 @@ GameState.o:	point.h
 GameState.o:	rectangle.h
 GameState.o:	rtc.h
 GameState.o:	utilities.h
+GameState.o:	video_gr.h
 
 LoseState.o:	LoseState.c
 LoseState.o:	LoseState.h

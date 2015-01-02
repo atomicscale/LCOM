@@ -25,8 +25,8 @@ void drawLabyrinth(Labyrinth* lab) {
 	drawRectangle(lab->finish, rgb(255, 0, 0), getGraphicsBuffer());
 }
 
-int insideLab(Labyrinth* lab){
-	if (!rectangleInside(getMouse()->rect, lab->rec1) && !rectangleInside(getMouse()->rect, lab->rec2) && !rectangleInside(getMouse()->rect, lab->rec3) && !rectangleInside(getMouse()->rect, lab->rec4) && !rectangleInside(getMouse()->rect, lab->rec5) && !rectangleInside(getMouse()->rect, lab->rec6))
+int insideLab(Labyrinth* lab, Rectangle* rect){
+	if (!rectangleInside(rect, lab->rec1) && !rectangleInside(rect, lab->rec2) && !rectangleInside(rect, lab->rec3) && !rectangleInside(rect, lab->rec4) && !rectangleInside(rect, lab->rec5) && !rectangleInside(rect, lab->rec6))
 		return 1;
 	else
 		return 0;

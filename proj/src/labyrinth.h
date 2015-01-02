@@ -16,6 +16,6 @@ Labyrinth* newLabyrinth();
 
 void drawLabyrinth(Labyrinth* lab);
 
-int insideLab(Labyrinth* lab);
+int insideLab(Labyrinth* lab, Rectangle* rect);
 
 void deleteLabyrinth(Labyrinth* lab);
