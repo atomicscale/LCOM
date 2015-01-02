@@ -9,7 +9,9 @@
 
 typedef struct {
 	int done; // specifies if the state is done
-	Bitmap* background; // specifies the background image in Win Menu
+	int counter; // used to change background
+	Bitmap* background1; // specifies the background image 1 in Win Menu
+	Bitmap* background2; // specifies the background image 2 in Win Menu
 } WinState;
 
 /**

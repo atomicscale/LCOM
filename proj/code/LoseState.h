@@ -9,7 +9,9 @@
 
 typedef struct {
 	int done; // specifies if the state is done
-	Bitmap* background; // specifies the background image in Lose State
+	int counter; // used to change background
+	Bitmap* background1; // specifies the background image 1 in Lose State
+	Bitmap* background2; // specifies the background image 2 in Lose State
 } LoseState;
 
 /**
