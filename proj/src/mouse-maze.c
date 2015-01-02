@@ -13,27 +13,24 @@
 #include "GameState.h"
 #include "WinState.h"
 #include "LoseState.h"
+#include "ModeState.h"
 
 const int FPS = 60;
 int m = 0;
 int n = 0;
 
-
-void handler_rtc(MouseMaze* maze){
+void handler_rtc(MouseMaze* maze) {
 	unsigned long ev = rtc_check();
-	if (maze->currentState == GAME_STATE){
-		if (ev & RTC_AF)
-		{
+	if (maze->currentState == GAME_STATE) {
+		if (ev & RTC_AF) {
 			((GameState*) (maze->state))->lose = 1;
 			((GameState*) (maze->state))->done = 1;
 		}
-		if (ev & RTC_UF)
-		{
+		if (ev & RTC_UF) {
 			((GameState*) (maze->state))->timer--;
 		}
 	}
 }
-
 
 void checkIfStateIsDone(MouseMaze* game);
 void deleteCurrentState(MouseMaze* game);
@@ -72,6 +69,10 @@ void drawMouseMaze(MouseMaze* maze) {
 	switch (maze->currentState) {
 	case MAIN_MENU_STATE:
 		drawMainMenuState(maze->state);
+		drawMouse();
+		break;
+	case MODE_STATE:
+		drawModeState(maze->state);
 		drawMouse();
 		break;
 	case GAME_STATE:
@@ -122,6 +123,9 @@ void updateMouseMaze(MouseMaze* maze) {
 		case MAIN_MENU_STATE:
 			updateMainMenuState(maze->state, maze->scan_code);
 			break;
+		case MODE_STATE:
+			updateModeState(maze->state, maze->scan_code);
+			break;
 		case GAME_STATE:
 			updateGameState(maze->state, maze->scan_code);
 			break;
@@ -154,6 +158,9 @@ void changeState(MouseMaze* maze, State newState) {
 	case MAIN_MENU_STATE:
 		maze->state = newMainMenuState();
 		break;
+	case MODE_STATE:
+		maze->state = newModeState();
+		break;
 	case GAME_STATE:
 		maze->state = newGameState(m, n);
 		break;
@@ -176,10 +183,41 @@ void checkIfStateIsDone(MouseMaze* maze) {
 
 			switch (action) {
 			case PLAY_CHOSEN:
-				changeState(maze, GAME_STATE);
+				changeState(maze, MODE_STATE);
 				break;
 			case EXIT_CHOSEN:
 				maze->validation = 1;
+				break;
+			}
+		}
+		break;
+	case MODE_STATE:
+		if (((ModeState*) (maze->state))->done) {
+			int action = ((ModeState*) (maze->state))->action;
+
+			switch (action) {
+			case NORMAL_MOUSE:
+				m = 0;
+				n = 0;
+				changeState(maze, GAME_STATE);
+				break;
+			case NORMAL_KEYBOARD:
+				m = 1;
+				n = 0;
+				changeState(maze, GAME_STATE);
+				break;
+			case NIGHT_MOUSE:
+				m = 0;
+				n = 1;
+				changeState(maze, GAME_STATE);
+				break;
+			case NIGHT_KEYBOARD:
+				m = 1;
+				n = 1;
+				changeState(maze, GAME_STATE);
+				break;
+			case EXIT:
+				changeState(maze, MAIN_MENU_STATE);
 				break;
 			}
 		}
@@ -210,6 +248,9 @@ void deleteCurrentState(MouseMaze* maze) {
 	switch (maze->currentState) {
 	case MAIN_MENU_STATE:
 		deleteMainMenuState(maze->state);
+		break;
+	case MODE_STATE:
+		deleteModeState(maze->state);
 		break;
 	case GAME_STATE:
 		deleteGameState(maze->state);

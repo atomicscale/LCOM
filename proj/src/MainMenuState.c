@@ -64,13 +64,11 @@ int updateMainMenuState(MainMenuState* state, unsigned long scancode) {
 void drawMainMenuState(MainMenuState* state) {
 	drawBitmap(state->background, 0, 0, ALIGN_LEFT);
 	if (state->mouseOnPlay){
-		drawRectangle(state->playButton, rgb(255, 0, 0), getGraphicsBuffer());
 		drawBitmap(state->onPlay, 50, 400, ALIGN_LEFT);
 	}
 	else
 		drawBitmap(state->play, 50, 400, ALIGN_LEFT);
 	if (state->mouseOnExit){
-		drawRectangle(state->exitButton, rgb(255, 0, 0), getGraphicsBuffer());
 		drawBitmap(state->onExit, 524, 400, ALIGN_LEFT);
 	}
 	else

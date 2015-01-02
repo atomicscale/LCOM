@@ -6,7 +6,7 @@
 #include "rtc.h"
 
 typedef enum{
-	MAIN_MENU_STATE, GAME_STATE, WIN_STATE, LOSE_STATE
+	MAIN_MENU_STATE, GAME_STATE, MODE_STATE, WIN_STATE, LOSE_STATE
 } State;
 
 typedef struct {
@@ -30,5 +30,9 @@ MouseMaze* startMouseMaze();
 void updateMouseMaze(MouseMaze* maze);
 void stopMouseMaze(MouseMaze* maze);
 
- 
+void changeState(MouseMaze* maze, State newState);
+void checkIfStateIsDone(MouseMaze* maze);
+void deleteCurrentState(MouseMaze* game);
+
+
 #endif /* __TEST5_H */
