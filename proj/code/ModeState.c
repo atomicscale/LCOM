@@ -8,7 +8,7 @@ ModeState* newModeState() {
 	ModeState* state = (ModeState*) malloc(sizeof(ModeState));
 	state->done = 0;
 	state->action=0;
-	state->background = loadBitmap("/home/lcom/lcom1415-t3g07/proj/rec/images/main-menu.bmp");
+	state->background = loadBitmap("/home/lcom/lcom1415-t3g07/proj/rec/images/GAME_MODE.bmp");
 	state->NormalMouse = loadBitmap("/home/lcom/lcom1415-t3g07/proj/rec/images/Choose/BLUE_BUTTONS/NORMAL_WITH_MOUSE_BLUE.bmp");
 	state->onNormalMouse = loadBitmap("/home/lcom/lcom1415-t3g07/proj/rec/images/Choose/RED_BUTTONS/NORMAL_WITH_MOUSE_RED.bmp");
 	state->NormalKeyboard = loadBitmap("/home/lcom/lcom1415-t3g07/proj/rec/images/Choose/BLUE_BUTTONS/NORMAL_WITH_KBD_BLUE.bmp");

@@ -9,7 +9,7 @@ MainMenuState* newMainMenuState() {
 
 	state->done = 0;
 	state->action=0;
-	state->background = loadBitmap("/home/lcom/lcom1415-t3g07/proj/rec/images/main-menu.bmp");
+	state->background = loadBitmap("/home/lcom/lcom1415-t3g07/proj/rec/images/MAIN_TITLE.bmp");
 	state->play = loadBitmap("/home/lcom/lcom1415-t3g07/proj/rec/images/Main/PlayButtonBlue.bmp");
 	state->onPlay = loadBitmap("/home/lcom/lcom1415-t3g07/proj/rec/images/Main/PlayButtonRed.bmp");
 	state->exit = loadBitmap("/home/lcom/lcom1415-t3g07/proj/rec/images/Main/ExitButtonBlue.bmp");
