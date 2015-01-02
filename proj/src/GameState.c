@@ -2,7 +2,6 @@
 #include "keyboard.h"
 #include "mouse.h"
 #include "rtc.h"
-#include "utilities.h"
 #include "rectangle.h"
 #include "video_gr.h"
 

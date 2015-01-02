@@ -1,7 +1,7 @@
 #include "bitmap.h"
 #include "video_gr.h"
 #include "stdio.h"
-#include "utilities.h"
+
 
 Bitmap* loadBitmap(const char* filename) {
     // allocating necessary size

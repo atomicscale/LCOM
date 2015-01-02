@@ -3,7 +3,6 @@
 #include "video_gr.h"
 #include "keyboard.h"
 #include "mouse.h"
-#include "utilities.h"
 
 MainMenuState* newMainMenuState() {
 	MainMenuState* state = (MainMenuState*) malloc(sizeof(MainMenuState));
@@ -28,8 +27,7 @@ MainMenuState* newMainMenuState() {
 	return state;
 }
 
-int updateMainMenuState(MainMenuState* state, unsigned long scancode) {
-	int draw = 0;
+void updateMainMenuState(MainMenuState* state, unsigned long scancode) {
 
 	// if ESC has been pressed, quit
 	if (scancode == KEY_DOWN(KEY_ESC)) {
@@ -58,7 +56,6 @@ int updateMainMenuState(MainMenuState* state, unsigned long scancode) {
 		}
 	} else
 		state->mouseOnExit = 0;
-	return draw;
 }
 
 void drawMainMenuState(MainMenuState* state) {

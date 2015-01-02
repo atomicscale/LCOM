@@ -4,8 +4,6 @@
 #include "i8042.h"
 #include "bitmap.h"
 #include "mouse-maze.h"
-#include "utilities.h"
-#include "MainMenuState.h"
 #include <stdint.h>
 #include <machine/int86.h>
 
@@ -44,7 +42,6 @@ MouseMaze* startMouseMaze() {
 	timer_set_square(0, FPS);
 	maze->validation = 0;
 	maze->scan_code = 0;
-	maze->draw = 1;
 	maze->timer = newTimer();
 	newMouse();
 	maze->currentState = MAIN_MENU_STATE;
@@ -140,7 +137,6 @@ void updateMouseMaze(MouseMaze* maze) {
 			break;
 		}
 		maze->scan_code = 0;
-		maze->draw = 1;
 		drawMouseMaze(maze);
 		flipScreen();
 	}
@@ -173,7 +169,6 @@ void changeState(MouseMaze* maze, State newState) {
 	default:
 		break;
 	}
-	maze->draw = 1;
 }
 
 void checkIfStateIsDone(MouseMaze* maze) {

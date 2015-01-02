@@ -37,8 +37,7 @@ ModeState* newModeState() {
 	return state;
 }
 
-int updateModeState(ModeState* state, unsigned long scancode) {
-	int draw = 0;
+void updateModeState(ModeState* state, unsigned long scancode) {
 
 
 	if (scancode == KEY_DOWN(KEY_ESC)) {
@@ -92,7 +91,6 @@ int updateModeState(ModeState* state, unsigned long scancode) {
 		} else
 			state->mouseOnNightKeyboard = 0;
 
-	return draw;
 }
 
 void drawModeState(ModeState* state) {

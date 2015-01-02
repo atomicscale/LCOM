@@ -36,10 +36,8 @@ GameState.o:	i8042.h
 GameState.o:	keyboard.h
 GameState.o:	labyrinth.h
 GameState.o:	mouse.h
-GameState.o:	point.h
 GameState.o:	rectangle.h
 GameState.o:	rtc.h
-GameState.o:	utilities.h
 GameState.o:	video_gr.h
 
 LoseState.o:	LoseState.c
@@ -47,20 +45,12 @@ LoseState.o:	LoseState.h
 LoseState.o:	bitmap.h
 LoseState.o:	keyboard.h
 
-MainMenuState.o:	/usr/include/minix/dir.h
-MainMenuState.o:	/usr/include/minix/types.h
-MainMenuState.o:	/usr/include/sys/null.h
-MainMenuState.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/ansi.h
-MainMenuState.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/stdio.h
-MainMenuState.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include/stdarg.h
 MainMenuState.o:	MainMenuState.c
 MainMenuState.o:	MainMenuState.h
 MainMenuState.o:	bitmap.h
 MainMenuState.o:	keyboard.h
 MainMenuState.o:	mouse.h
-MainMenuState.o:	point.h
 MainMenuState.o:	rectangle.h
-MainMenuState.o:	utilities.h
 MainMenuState.o:	video_gr.h
 
 ModeState.o:	ModeState.c
@@ -68,7 +58,6 @@ ModeState.o:	ModeState.h
 ModeState.o:	bitmap.h
 ModeState.o:	keyboard.h
 ModeState.o:	mouse.h
-ModeState.o:	point.h
 ModeState.o:	rectangle.h
 ModeState.o:	video_gr.h
 
@@ -85,9 +74,7 @@ bitmap.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/stdio.h
 bitmap.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include/stdarg.h
 bitmap.o:	bitmap.c
 bitmap.o:	bitmap.h
-bitmap.o:	point.h
 bitmap.o:	rectangle.h
-bitmap.o:	utilities.h
 bitmap.o:	video_gr.h
 
 kbc.o:	/usr/include/errno.h
@@ -254,13 +241,12 @@ main.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/string.h
 main.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/syslimits.h
 main.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/unistd.h
 main.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include/stdarg.h
-main.o:	bitmap.h
+main.o:	i8042.h
 main.o:	main.c
 main.o:	mouse-maze.h
-main.o:	point.h
 main.o:	rectangle.h
+main.o:	rtc.h
 main.o:	timer.h
-main.o:	utilities.h
 main.o:	video_gr.h
 
 mouse-maze.o:	/usr/include/limits.h
@@ -306,11 +292,9 @@ mouse-maze.o:	labyrinth.h
 mouse-maze.o:	mouse-maze.c
 mouse-maze.o:	mouse-maze.h
 mouse-maze.o:	mouse.h
-mouse-maze.o:	point.h
 mouse-maze.o:	rectangle.h
 mouse-maze.o:	rtc.h
 mouse-maze.o:	timer.h
-mouse-maze.o:	utilities.h
 mouse-maze.o:	video_gr.h
 
 mouse.o:	/usr/include/limits.h
@@ -351,9 +335,6 @@ mouse.o:	mouse.h
 mouse.o:	point.h
 mouse.o:	rectangle.h
 mouse.o:	video_gr.h
-
-point.o:	point.c
-point.o:	point.h
 
 rectangle.o:	point.h
 rectangle.o:	rectangle.c
@@ -465,15 +446,6 @@ timer.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include/stdarg.h
 timer.o:	i8254.h
 timer.o:	timer.c
 timer.o:	timer.h
-
-utilities.o:	/usr/include/minix/dir.h
-utilities.o:	/usr/include/minix/types.h
-utilities.o:	/usr/include/sys/null.h
-utilities.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/ansi.h
-utilities.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include-fixed/stdio.h
-utilities.o:	/usr/pkg/gcc44/lib/gcc/i686-pc-minix/4.4.3/include/stdarg.h
-utilities.o:	utilities.c
-utilities.o:	utilities.h
 
 vbe.o:	/usr/include/errno.h
 vbe.o:	/usr/include/limits.h

@@ -4,21 +4,11 @@
 
 #include "rectangle.h"
 
-
-/* Constants for VBE 0x105 mode */
-
-/* The physical address may vary from VM to VM.
- * At one time it was 0xD0000000
- *  #define VRAM_PHYS_ADDR    0xD0000000
- * Currently on lab B107 is 0xF0000000
- * Better run my version of lab5 as follows:
- *     service run `pwd`/lab5 -args "mode 0x105"
+/** @defgroup video_gr video_gr
+ * @{
+ *
+ * Functions for outputing data to screen in graphics mode
  */
-#define VRAM_PHYS_ADDR	0xF0000000
-#define H_RES             1024
-#define V_RES		  768
-#define BITS_PER_PIXEL	  8
-
 
 #define GRAPHIC_MODE 0x114
 #define BIOS_VIDEO 0x10
@@ -31,26 +21,21 @@
 /* Private global variables */
 
 static char *video_mem;		/* Process address to which VRAM is mapped */
-static char *buffer;
+static char *buffer;		/* Process address to auxiliary buffer */
 
 static unsigned h_res;		/* Horizontal screen resolution in pixels */
 static unsigned v_res;		/* Vertical screen resolution in pixels */
 static unsigned bits_per_pixel; /* Number of VRAM bits per pixel */
-static unsigned bytes_per_pixel;
-static unsigned int vram_size;
-
+static unsigned bytes_per_pixel; /* Number of VRAM bytes per pixel */
+static unsigned int vram_size; /* Size of VRAM bits per pixel */
 
 #define SWAP(X,Y) { \
        int temp = X ; \
        X = Y ; \
        Y = temp ; \
-    }
+    } /**< @brief Swap values */
 
-/** @defgroup video_gr video_gr
- * @{
- *
- * Functions for outputing data to screen in graphics mode
- */
+
 
 /**
  * @brief Initializes the video module in graphics mode
@@ -72,25 +57,88 @@ void *vg_init(unsigned short mode);
  */
 int vg_exit(void);
 
- /** @} end of video_gr */
 
+/**
+* @brief Draw a pixel
+*
+* @param x X pixel cord
+* @param y Y pixel cord
+* @param color Pixel color
+* @param buf Buffer to draw
+*/
 void draw_pixel(unsigned int x, unsigned int y, int color, char* buf);
 
+/**
+* @brief Draw a Rectangle
+*
+* @param xi X pixel cord
+* @param yi Y pixel cord
+* @param xf X pixel cord
+* @param yf Y pixel cord
+* @param color Rectangle color
+* @param buf Buffer to draw
+* @return Validation
+*/
 int draw_rectangle(unsigned short xi, unsigned short yi, unsigned short xf,
 		unsigned short yf, int color, char* buf);
 
+/**
+* @brief Draw a circle
+*
+* @param x0 X center cord
+* @param y0 Y center cord
+* @param radius X pixel final cord
+* @param color rectangleCircle color
+* @param buf Buffer to draw
+*/
 void draw_circle(int x0, int y0, int radius, int color, char* buf);
 
+/**
+* @brief Cover a screen except a circle
+*
+* @param x0 X center cord
+* @param y0 Y center cord
+* @param radius X pixel final cord
+* @param color rectangleCircle color
+* @param buf Buffer to draw
+*/
 void see_circle(int x0, int y0, int radius, int color, char* buf);
 
+/**
+* @brief Get a graphics buffer
+*
+* @return Graphics buffer
+*/
 char* getGraphicsBuffer();
 
+/**
+* @brief Change Graphics buffer to Video Mem
+*
+*/
 void flipScreen();
 
+
+/**
+* @brief Get horizontal resolution
+*
+* @return Horizontal resolution
+*/
 unsigned getH_res();
+/**
+* @brief Get vertical resolution
+*
+* @return Vertical resolution
+*/
 unsigned getV_res();
-void drawMaze();
-void draw_rectangle2(Rectangle* rectangle, int color, char* buf);
+
+/**
+* @brief Creates a specific color
+*
+* @param r fraction of red
+* @param g fraction of green
+* @param b fraction of blue
+* @return Result color
+*/
 int rgb(unsigned char r, unsigned char g, unsigned char b);
 
 #endif /* __VIDEO_GR_H */

@@ -1,9 +1,13 @@
 #pragma once
 
-#define KEY_DOWN(k) (k)
-#define KEY_UP(k) (0x80 | k)
-#define MSB BIT(7)
-//#define BYTE_0xE0 (0xE0 << 8)
+/** @defgroup keyboard keyboard
+ * @{
+ * Functions for keyboard
+ */
+
+#define KEY_DOWN(k) (k)  /**< @brief Verifies if a key is pressed  */
+#define KEY_UP(k) (0x80 | k) /**< @brief Verifies if a key isn't pressed */
+#define MSB BIT(7) /**< @brief Most significant byte */
 
 /// Keys
 typedef enum {
@@ -112,13 +116,18 @@ typedef enum {
 } KEY;
 
 
-
+/**
+ * @brief Subscribe keyboard interrupts
+ *
+ * @return validation value
+ */
 int kbd_subscribe();
 
+/**
+ * @brief Unsubscribe keyboard interrupts
+ *
+ * @return validation value
+ */
 int kbd_unsubscribe();
-
-void kbd_wait_key(unsigned long long key);
-
-int kbd_handler_c();
 
 

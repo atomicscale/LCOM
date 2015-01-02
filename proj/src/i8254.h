@@ -4,16 +4,16 @@
 /** @defgroup i8254 i8254
  * @{
  *
- * Constants for programming the i8254 Timer. Needs to be completed.
+ * Constants for programming the i8254 Timer.
  */
 
-#define TIMER_FREQ  1193182    /**< @brief clock frequency for timer in PC and AT */
-#define TIMER_MIN_FREQ 19  // frequencia minima
+#define TIMER_FREQ  1193182	/**< @brief clock frequency for timer in PC and AT */
+#define TIMER_MIN_FREQ 19 	/**< @brief clock minimum frequency for timer in PC and AT */
 
-#define BIT(n) (0x01<<(n))
+#define BIT(n) (0x01<<(n)) /**< @brief macro to turn a n bit to 1  */
 
 #define TIMER0_IRQ	        0    /**< @brief Timer 0 IRQ line */
-#define TIMER_HOOK_BIT		0	// usado na função timer_subscribe_int()
+#define TIMER_HOOK_BIT		0	/**< @brief Timer 0 hook bit */
 
 /* I/O port addresses */
 
@@ -51,9 +51,9 @@
 
 /* READ-BACK COMMAND FORMAT */
 
-#define TIMER_RB_COUNT_         BIT(5)
-#define TIMER_RB_STATUS_        BIT(4)
-#define TIMER_RB_SEL(n)         BIT((n)+1)
+#define TIMER_RB_COUNT_         BIT(5)		/**< @brief Read-Back command count */
+#define TIMER_RB_STATUS_        BIT(4)		/**< @brief Read-Back command status */
+#define TIMER_RB_SEL(n)         BIT((n)+1)	/**< @brief Read-Back command select */
 
 
 /**@}*/

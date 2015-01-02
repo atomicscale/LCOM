@@ -1,20 +1,37 @@
 #ifndef __TIMER_H
 #define __TIMER_H
 
-typedef struct {
-	int counter;
-	int ticked;
-} Timer;
-
-Timer* newTimer();
-void resetTimer(Timer* timer);
-void deleteTimer(Timer* timer);
-
 /** @defgroup timer timer
  * @{
  *
  * Functions for using the i8254 timers
  */
+
+typedef struct {
+	int counter; // specifies a counter
+	int ticked; // specifies if a timer interrupt is ticked
+} Timer;
+
+/**
+ * @brief Creates a new Timer
+ *
+ * @return Non NULL pointer to the timer
+ */
+Timer* newTimer();
+/**
+ * @brief Reset ticked flag
+ *
+ * @param timer Pointer to the timer
+ */
+void resetTimer(Timer* timer);
+
+/**
+ * @brief Delete timer
+ *
+ * @param timer Pointer to the timer
+ */
+void deleteTimer(Timer* timer);
+
 
 /**
  * @brief Configures a timer to generate a square wave

@@ -1,13 +1,10 @@
 #pragma once
 
-/** @defgroup Bitmap Bitmap
+/** @defgroup bitmap bitmap
  * @{
  * Functions for manipulating bitmaps
  */
 
-
-#define H_RES         1024
-#define V_RES		  768
 
 
 // http://difusal.blogspot.pt/2014/09/minixtutorial-8-loading-bmp-images.html
